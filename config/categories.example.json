@@ -1,0 +1,69 @@
+{
+  "default_category_id": "unsorted",
+  "categories": [
+    {
+      "id": "overview",
+      "name": "Overview",
+      "description": "Reviews, research progress, and introductory material",
+      "color": "#3f7f76",
+      "keywords": ["review", "overview", "progress"],
+      "item_ids": [],
+      "item_keys": []
+    },
+    {
+      "id": "device_physics",
+      "name": "Device Physics",
+      "description": "Device structures, gratings, and coupled-wave theory",
+      "color": "#b8792f",
+      "keywords": ["coupled wave", "bragg", "grating"],
+      "item_ids": [],
+      "item_keys": []
+    },
+    {
+      "id": "tuning",
+      "name": "Tuning",
+      "description": "Current tuning, nonlinearity, linearization, and chirp",
+      "color": "#426da8",
+      "keywords": ["tuning", "chirp", "linearization", "fmcw"],
+      "item_ids": [],
+      "item_keys": []
+    },
+    {
+      "id": "mode_stability",
+      "name": "Mode Stability",
+      "description": "Mode hopping, cavity mode spacing, and stability",
+      "color": "#a24f70",
+      "keywords": ["mode-hop", "mode hopping", "bistability", "cavity mode"],
+      "item_ids": [],
+      "item_keys": []
+    },
+    {
+      "id": "fiber_laser",
+      "name": "Fiber Laser",
+      "description": "Fiber gratings and fiber lasers",
+      "color": "#5d7f39",
+      "keywords": ["fiber laser", "fibre laser", "phase-shifted"],
+      "item_ids": [],
+      "item_keys": []
+    },
+    {
+      "id": "linewidth_noise",
+      "name": "Linewidth and Noise",
+      "description": "Linewidth, RIN, and spectral noise",
+      "color": "#7a5aa6",
+      "keywords": ["linewidth", "rin", "noise"],
+      "item_ids": [],
+      "item_keys": []
+    },
+    {
+      "id": "unsorted",
+      "name": "Unsorted",
+      "description": "Items without a matching category",
+      "color": "#6b7280",
+      "keywords": [],
+      "item_ids": [],
+      "item_keys": []
+    }
+  ]
+}
+

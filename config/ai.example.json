@@ -1,0 +1,7 @@
+{
+  "provider": "codex",
+  "base_url": "https://api.openai.com/v1/chat/completions",
+  "model": "",
+  "api_key": ""
+}
+
