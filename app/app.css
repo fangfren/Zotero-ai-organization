@@ -34,6 +34,33 @@
   background: var(--accent-soft);
 }
 
+.app-action.danger:hover {
+  border-color: var(--danger);
+  color: var(--danger);
+  background: color-mix(in srgb, var(--danger) 10%, var(--surface));
+}
+
+.app-hint {
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.app-hint code {
+  font: 12px/1.5 ui-monospace, Consolas, monospace;
+  overflow-wrap: anywhere;
+}
+
+.codex-status {
+  margin-bottom: 14px;
+}
+
+.codex-status:empty {
+  display: none;
+}
+
 #app-modal {
   position: fixed;
   inset: 0;
@@ -246,7 +273,7 @@
 
 .checkbox-grid label {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 7px;
   min-width: 0;
   padding: 7px 9px;
@@ -256,10 +283,21 @@
   cursor: pointer;
 }
 
+.checkbox-grid label span {
+  min-width: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+  line-height: 1.35;
+}
+
 .checkbox-grid input {
   width: 16px;
   height: 16px;
   flex: 0 0 16px;
+  margin-top: 1px;
   accent-color: var(--accent);
 }
 
@@ -273,6 +311,129 @@
   font: 12px/1.55 ui-monospace, Consolas, monospace;
   white-space: pre-wrap;
   overflow-wrap: anywhere;
+}
+
+.report-output.tall {
+  max-height: min(52vh, 620px);
+  overflow: auto;
+}
+
+.dropzone {
+  position: relative;
+  display: grid;
+  gap: 6px;
+  place-items: center;
+  min-height: 108px;
+  padding: 18px;
+  border: 2px dashed var(--line);
+  border-radius: 10px;
+  background: var(--surface-soft);
+  color: var(--muted);
+  cursor: pointer;
+  text-align: center;
+}
+
+.dropzone.active,
+.dropzone:hover {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.dropzone p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.dropzone input[type="file"] {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  border: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+
+.import-url-row {
+  display: flex;
+  gap: 8px;
+  align-items: stretch;
+}
+
+.import-url-row input {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.import-url-row .app-action {
+  flex: 0 0 auto;
+}
+
+.import-row {
+  padding: 12px 13px;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: var(--surface-soft);
+}
+
+.import-row + .import-row {
+  margin-top: 9px;
+}
+
+.import-row p {
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.55;
+  overflow-wrap: anywhere;
+}
+
+.import-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.import-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.related-imports {
+  margin-top: 22px;
+}
+
+.related-imports h3 {
+  margin: 0 0 6px;
+  font-size: 15px;
+  letter-spacing: 0;
+}
+
+.related-imports .import-row {
+  margin-top: 9px;
+}
+
+.checkbox-grid.scroll {
+  max-height: 230px;
+  overflow: auto;
+  padding-right: 4px;
+}
+
+.status-pill.ok {
+  border-color: color-mix(in srgb, var(--accent) 55%, var(--line));
+  color: var(--accent);
+}
+
+.status-pill.bad {
+  border-color: color-mix(in srgb, var(--danger) 55%, var(--line));
+  color: var(--danger);
 }
 
 #app-toast {
@@ -332,6 +493,12 @@
   }
   .app-grid {
     grid-template-columns: 1fr;
+  }
+  .import-url-row {
+    flex-direction: column;
+  }
+  .import-url-row .app-action {
+    width: 100%;
   }
   .category-row {
     grid-template-columns: 1fr 36px;
