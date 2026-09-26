@@ -3,16 +3,13 @@ setlocal
 
 set "PYTHONDONTWRITEBYTECODE=1"
 
-set "PYTHON=%USERPROFILE%\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe"
-
-if not exist "%PYTHON%" (
-  echo Bundled Python was not found:
-  echo %PYTHON%
+call "%~dp0find-python.cmd"
+if errorlevel 1 (
   pause
   exit /b 1
 )
 
-"%PYTHON%" "%~dp0sync_zotero.py" %*
+"%PYTHON%" %PYTHON_ARGS% "%~dp0sync_zotero.py" %*
 set "EXITCODE=%ERRORLEVEL%"
 
 echo.

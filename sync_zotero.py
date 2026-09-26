@@ -16,7 +16,14 @@ from typing import Iterable
 
 PROJECT_ROOT = Path(__file__).resolve().parent
 DEFAULT_OUTPUT = PROJECT_ROOT / "output"
-DEFAULT_ZOTERO_DIR = Path(os.environ.get("USERPROFILE", str(Path.home()))) / "Zotero"
+
+
+def default_zotero_dir() -> Path:
+    configured = os.environ.get("ZOTERO_DATA_DIR") or os.environ.get("ZOTERO_DIR")
+    return Path(configured).expanduser() if configured else Path.home() / "Zotero"
+
+
+DEFAULT_ZOTERO_DIR = default_zotero_dir()
 DEFAULT_CATEGORY_CONFIG = PROJECT_ROOT / "config" / "categories.json"
 NON_BIBLIOGRAPHIC_TYPES = {"attachment", "note", "annotation"}
 
