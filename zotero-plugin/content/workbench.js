@@ -19,6 +19,7 @@ var ResearchWorkbench = (function () {
 	const DEFAULT_PER_DOC_CHARS = 20000;
 	const DEFAULT_TIMEOUT = 600;
 	const MAX_STORED_MESSAGES = 200;
+	const README_VIEW_CHARS = 200000;
 	const README_BRANCHES = ["main", "master", "HEAD"];
 	const README_FILENAMES = [
 		"README.md",
@@ -40,7 +41,11 @@ var ResearchWorkbench = (function () {
 		en: {
 			pluginName: "Research Workbench",
 			sectionHeader: "Research Workbench",
-			sectionSidenav: "AI chat",
+			sectionSidenav: "Research Workbench",
+			tabNotes: "Annotations & notes",
+			tabTags: "Tag manager",
+			tabChat: "AI chat",
+			tabReadme: "README",
 			chatHint: "Chat with Codex about this item. The first message also carries its metadata, notes, annotations, PDF text and imported README files.",
 			chatPlaceholder: "Ask a question about this item...",
 			chatEmpty: "No messages yet. Try: what problem does this paper solve, and what method does it propose?",
@@ -90,11 +95,60 @@ var ResearchWorkbench = (function () {
 			localFileMissing: "The local file could not be found. Check the path and try again.",
 			fetchFailed: "Could not download the file",
 			settingsHint: "Settings are under Edit -> Settings -> Research Workbench.",
+			notesHint: "Notes and PDF annotations of this item. A note created here is saved into Zotero as a child note.",
+			annotationListLabel: "PDF annotations",
+			noAnnotations: "No PDF annotations for this item yet.",
+			annotationOpen: "Open in PDF",
+			annotationOpenFailed: "Could not open that annotation in the PDF reader.",
+			annotationPage: "Page %1",
+			annotationNoPage: "No page",
+			annotationTypeHighlight: "Highlight",
+			annotationTypeUnderline: "Underline",
+			annotationTypeNote: "Sticky note",
+			annotationTypeImage: "Image",
+			annotationTypeInk: "Ink",
+			annotationTypeUnknown: "Annotation",
+			readmeHint: "README and documentation linked to this item. Pick a file to read it here, or import a new README.",
+			readmeSelect: "Select a linked document to read it here.",
+			readmeLoading: "Loading document...",
+			readmeLoadFailed: "Could not read that document.",
+			readmeTruncated: "Only the first %1 characters are shown here.",
+			readmeOpenItem: "Open in Zotero",
+			readmeDocList: "Linked documents",
+			newNote: "New note",
+			noteTitlePrompt: "Note title",
+			noteTitlePlaceholder: "For example: problem, method, experiment setup",
+			noteBodyPrompt: "Note content (optional, blank lines separate paragraphs):",
+			noteCreated: "Note created and opened in the Zotero note editor.",
+			noteDeleted: "Note moved to the Zotero trash.",
+			noteDeleteFailed: "Could not delete that note.",
+			noteDeleteConfirm: "Delete the note \"%1\"? It is moved to the Zotero trash.",
+			noteOpenFailed: "Could not open the note in the Zotero note editor.",
+			untitledNote: "Untitled note",
+			noNotes: "No notes for this item yet.",
+			openNote: "Open",
+			deleteNote: "Delete",
+			tagsHint: "Tags of this item. Add or remove tags here; changes are saved to Zotero immediately.",
+			tagInputPlaceholder: "Type a tag name and press Enter",
+			addTag: "Add tag",
+			tagAdded: "Tag added.",
+			tagRemoved: "Tag removed.",
+			tagMissing: "Type a tag name first.",
+			tagDuplicate: "This item already has that tag.",
+			tagRemoveFailed: "That tag is no longer on this item.",
+			noTags: "No tags for this item yet.",
+			removeTag: "Remove tag",
+			tagSuggestions: "Library tags",
+			tagSuggestionFailed: "Could not load tag suggestions.",
 		},
 		zh: {
 			pluginName: "研究助手",
 			sectionHeader: "研究助手",
-			sectionSidenav: "AI 对话",
+			sectionSidenav: "研究助手",
+			tabNotes: "注释笔记",
+			tabTags: "标签管理",
+			tabChat: "AI 对话",
+			tabReadme: "关联 README",
 			chatHint: "与 Codex 就这篇文献对话。首条消息会带上元数据、笔记、批注、PDF 全文和已导入的 README。",
 			chatPlaceholder: "输入关于这篇文献的问题……",
 			chatEmpty: "还没有对话。可以试试：这篇文献要解决什么问题，提出了什么方法？",
@@ -144,6 +198,51 @@ var ResearchWorkbench = (function () {
 			localFileMissing: "找不到这个本地文件，请检查路径后重试。",
 			fetchFailed: "下载失败",
 			settingsHint: "设置入口：编辑 → 设置 → 研究助手。",
+			notesHint: "这篇文献的笔记和 PDF 注释。在这里新建的笔记会作为子笔记保存到 Zotero。",
+			annotationListLabel: "PDF 注释",
+			noAnnotations: "这篇文献还没有 PDF 注释。",
+			annotationOpen: "在 PDF 中打开",
+			annotationOpenFailed: "无法在 PDF 阅读器中打开这条注释。",
+			annotationPage: "第 %1 页",
+			annotationNoPage: "无页码",
+			annotationTypeHighlight: "高亮",
+			annotationTypeUnderline: "下划线",
+			annotationTypeNote: "便签",
+			annotationTypeImage: "图像",
+			annotationTypeInk: "手写",
+			annotationTypeUnknown: "注释",
+			readmeHint: "关联到这篇文献的 README 和说明文档。选择文件即可在此阅读，也可以导入新的 README。",
+			readmeSelect: "选择一份已关联的文档开始阅读。",
+			readmeLoading: "正在读取文档……",
+			readmeLoadFailed: "无法读取这份文档。",
+			readmeTruncated: "此处仅显示前 %1 个字符。",
+			readmeOpenItem: "在 Zotero 中打开",
+			readmeDocList: "已关联的文档",
+			newNote: "新建笔记",
+			noteTitlePrompt: "笔记标题",
+			noteTitlePlaceholder: "例如：要解决的问题、方法、实验设置",
+			noteBodyPrompt: "笔记内容（可留空，空行分段）：",
+			noteCreated: "笔记已创建，并在 Zotero 笔记编辑器中打开。",
+			noteDeleted: "笔记已移入 Zotero 回收站。",
+			noteDeleteFailed: "无法删除这条笔记。",
+			noteDeleteConfirm: "确定删除笔记“%1”吗？笔记会移入 Zotero 回收站。",
+			noteOpenFailed: "无法在 Zotero 笔记编辑器中打开这条笔记。",
+			untitledNote: "无标题笔记",
+			noNotes: "这篇文献还没有笔记。",
+			openNote: "打开",
+			deleteNote: "删除",
+			tagsHint: "这篇文献的标签。可以在这里增删标签，修改会立即保存到 Zotero。",
+			tagInputPlaceholder: "输入标签名称，按 Enter 添加",
+			addTag: "添加标签",
+			tagAdded: "标签已添加。",
+			tagRemoved: "标签已移除。",
+			tagMissing: "请先输入标签名称。",
+			tagDuplicate: "这篇文献已经有这个标签了。",
+			tagRemoveFailed: "这篇文献已经没有这个标签了。",
+			noTags: "这篇文献还没有标签。",
+			removeTag: "移除标签",
+			tagSuggestions: "库内标签",
+			tagSuggestionFailed: "无法读取库内标签建议。",
 		},
 	};
 
@@ -969,7 +1068,7 @@ var ResearchWorkbench = (function () {
 			followRedirects: true,
 			successCodes: [200],
 			headers: {
-				"User-Agent": "Zotero-Research-Workbench/1.0.2 (+https://github.com/fangfren/Zotero-ai-organization)",
+				"User-Agent": "Zotero-Research-Workbench/1.0.3 (+https://github.com/fangfren/Zotero-ai-organization)",
 				"Accept": "text/plain, text/markdown, text/x-markdown, */*",
 			},
 		});
@@ -1704,6 +1803,226 @@ var ResearchWorkbench = (function () {
 		return items.length ? items[0] : null;
 	}
 
+	// ------------------------------------------------------------ notes and tags
+
+	function noteTitle(note) {
+		try {
+			const title = String(note.getNoteTitle() || "").trim();
+			if (title) {
+				return title;
+			}
+		}
+		catch (e) {
+			// Fall through to the default title.
+		}
+		return t("untitledNote");
+	}
+
+	function notePreview(note) {
+		try {
+			const text = htmlToPlainText(note.getNote() || "").replace(/\s+/g, " ").trim();
+			return text.length > 140 ? `${text.slice(0, 140)}...` : text;
+		}
+		catch (e) {
+			return "";
+		}
+	}
+
+	function notesForItem(item) {
+		try {
+			const ids = item.getNotes() || [];
+			return Zotero.Items.get(ids).filter((note) => note && !note.deleted);
+		}
+		catch (e) {
+			logError(e);
+			return [];
+		}
+	}
+
+	function listNotes(item) {
+		return notesForItem(item).map((note) => ({
+			id: note.id,
+			title: noteTitle(note),
+			preview: notePreview(note),
+			dateAdded: String(note.dateAdded || ""),
+		}));
+	}
+
+	async function createNote(item, title, body) {
+		const note = new Zotero.Item("note");
+		note.libraryID = item.libraryID;
+		note.parentItemID = item.id;
+		const heading = String(title || "").trim() || t("untitledNote");
+		const parts = [`<h1>${escapeHtml(heading)}</h1>`];
+		const text = String(body || "").trim();
+		if (text) {
+			text.split(/\r?\n\s*\r?\n/).forEach((paragraph) => {
+				const value = paragraph.trim();
+				if (value) {
+					parts.push(`<p>${escapeHtml(value).replace(/\r?\n/g, "<br/>")}</p>`);
+				}
+			});
+		}
+		note.setNote(parts.join(""));
+		await note.saveTx();
+		return note;
+	}
+
+	function openNote(noteID) {
+		const win = getMainWindow();
+		if (!win || !win.ZoteroPane || typeof win.ZoteroPane.openNote !== "function") {
+			return false;
+		}
+		try {
+			win.ZoteroPane.openNote(noteID);
+			return true;
+		}
+		catch (e) {
+			logError(e);
+			return false;
+		}
+	}
+
+	async function deleteNote(noteID) {
+		const note = Zotero.Items.get(noteID);
+		if (!note || !note.isNote || !note.isNote()) {
+			return false;
+		}
+		note.deleted = true;
+		await note.saveTx();
+		return true;
+	}
+
+	function annotationTypeLabel(type) {
+		switch (String(type || "")) {
+			case "highlight":
+				return t("annotationTypeHighlight");
+			case "underline":
+				return t("annotationTypeUnderline");
+			case "note":
+				return t("annotationTypeNote");
+			case "image":
+				return t("annotationTypeImage");
+			case "ink":
+				return t("annotationTypeInk");
+			default:
+				return t("annotationTypeUnknown");
+		}
+	}
+
+	function itemAnnotations(item) {
+		const rows = [];
+		let attachments = [];
+		try {
+			attachments = Zotero.Items.get(item.getAttachments() || []);
+		}
+		catch (e) {
+			logError(e);
+			return rows;
+		}
+		attachments.forEach((attachment) => {
+			if (!attachment || !attachment.isFileAttachment || !attachment.isFileAttachment()) {
+				return;
+			}
+			let annotations = [];
+			try {
+				annotations = attachment.getAnnotations() || [];
+			}
+			catch (e) {
+				annotations = [];
+			}
+			annotations.forEach((annotation) => {
+				rows.push({
+					id: annotation.id,
+					key: String(annotation.key || ""),
+					attachmentID: attachment.id,
+					attachmentKey: String(attachment.key || ""),
+					attachmentTitle: String(
+						attachment.getField("title") || attachment.attachmentFilename || ""
+					),
+					type: String(annotation.annotationType || ""),
+					text: String(annotation.annotationText || "").trim(),
+					comment: String(annotation.annotationComment || "").trim(),
+					pageLabel: String(annotation.annotationPageLabel || "").trim(),
+					color: String(annotation.annotationColor || ""),
+				});
+			});
+		});
+		return rows;
+	}
+
+	function openAnnotation(attachmentID, annotationKey) {
+		try {
+			if (Zotero.Reader && typeof Zotero.Reader.open === "function") {
+				Zotero.Reader.open(attachmentID, { annotationID: annotationKey });
+				return true;
+			}
+		}
+		catch (e) {
+			logError(e);
+		}
+		return false;
+	}
+
+	function listTags(item) {
+		try {
+			return (item.getTags() || [])
+				.map((entry) => ({
+					name: String(entry.tag || ""),
+					type: Number(entry.type) || 0,
+				}))
+				.filter((entry) => entry.name)
+				.sort((a, b) => a.name.localeCompare(b.name));
+		}
+		catch (e) {
+			logError(e);
+			return [];
+		}
+	}
+
+	async function addTag(item, name) {
+		const tag = String(name || "").trim();
+		if (!tag) {
+			return { ok: false, reason: "empty" };
+		}
+		const alreadyThere = (item.getTags() || [])
+			.some((entry) => String(entry.tag || "") === tag);
+		if (alreadyThere) {
+			return { ok: false, reason: "duplicate" };
+		}
+		item.addTag(tag, 0);
+		await item.saveTx();
+		return { ok: true, tags: listTags(item) };
+	}
+
+	async function removeTag(item, name) {
+		const tag = String(name || "").trim();
+		if (!tag) {
+			return false;
+		}
+		if (!item.removeTag(tag)) {
+			return false;
+		}
+		await item.saveTx();
+		return true;
+	}
+
+	async function suggestTags(libraryID, prefix, limit) {
+		try {
+			const all = await Zotero.Tags.getAll(libraryID, [0]);
+			const needle = String(prefix || "").trim().toLowerCase();
+			return (all || [])
+				.map((entry) => String(entry.tag || ""))
+				.filter((name) => name && (!needle || name.toLowerCase().startsWith(needle)))
+				.sort((a, b) => a.localeCompare(b))
+				.slice(0, limit || 8);
+		}
+		catch (e) {
+			logError(e);
+			return [];
+		}
+	}
+
 	// ------------------------------------------------------------------- UI
 
 	function injectStyles(win, rootURI) {
@@ -1901,8 +2220,69 @@ var ResearchWorkbench = (function () {
 
 	function buildPaneBody(win, doc, body, item) {
 		body.textContent = "";
-		const container = element(doc, "div", { class: "rw-pane rw-chat" });
+		const container = element(doc, "div", { class: "rw-pane rw-workbench" });
+		const tabBar = element(doc, "div", { class: "rw-tabs", role: "tablist" });
+		const panels = element(doc, "div", { class: "rw-panels" });
 
+		const definitions = [
+			{
+				id: "notes",
+				label: t("tabNotes"),
+				build: (panel) => buildNotesPanel(win, doc, panel, item),
+			},
+			{
+				id: "tags",
+				label: t("tabTags"),
+				build: (panel) => buildTagsPanel(win, doc, panel, item),
+			},
+			{
+				id: "chat",
+				label: t("tabChat"),
+				build: (panel) => {
+					panel.classList.add("rw-chat");
+					buildChatPanel(win, doc, panel, item);
+				},
+			},
+			{
+				id: "readme",
+				label: t("tabReadme"),
+				build: (panel) => buildReadmePanel(win, doc, panel, item),
+			},
+		];
+		const buttons = [];
+		const selectTab = (id) => {
+			definitions.forEach((definition, index) => {
+				const active = definition.id === id;
+				buttons[index].classList.toggle("is-active", active);
+				buttons[index].setAttribute("aria-selected", active ? "true" : "false");
+				panels.children[index].hidden = !active;
+			});
+		};
+		definitions.forEach((definition) => {
+			const button = element(doc, "button", {
+				class: "rw-tab",
+				type: "button",
+				role: "tab",
+				"data-tab": definition.id,
+			}, definition.label);
+			button.addEventListener("click", () => selectTab(definition.id));
+			buttons.push(button);
+			tabBar.appendChild(button);
+
+			const panel = element(doc, "div", {
+				class: `rw-panel rw-panel-${definition.id}`,
+				"data-panel": definition.id,
+			});
+			panels.appendChild(panel);
+			definition.build(panel);
+		});
+		container.appendChild(tabBar);
+		container.appendChild(panels);
+		body.appendChild(container);
+		selectTab("chat");
+	}
+
+	function buildChatPanel(win, doc, container, item) {
 		const toolbar = element(doc, "div", { class: "rw-chat-toolbar" });
 		const newButton = element(doc, "button", { class: "rw-button", type: "button" }, t("newChat"));
 		newButton.addEventListener("click", () => {
@@ -1977,10 +2357,374 @@ var ResearchWorkbench = (function () {
 
 		container.appendChild(element(doc, "div", { class: "rw-label" }, t("linkedDocs")));
 		container.appendChild(element(doc, "div", { class: "rw-docs" }));
-		body.appendChild(container);
 
 		renderDocs(doc, container, item);
 		renderChat(win, container, item, isRunning()).catch((e) => logError(e));
+	}
+
+	function buildNotesPanel(win, doc, panel, item) {
+		const toolbar = element(doc, "div", { class: "rw-actions" });
+		const createButton = element(
+			doc,
+			"button",
+			{ class: "rw-button rw-primary rw-note-new", type: "button" },
+			t("newNote")
+		);
+		createButton.addEventListener("click", () => {
+			const title = promptText(win, t("newNote"), t("noteTitlePrompt"), "");
+			if (title === null) {
+				return;
+			}
+			const content = promptText(win, t("newNote"), t("noteBodyPrompt"), "");
+			if (content === null) {
+				return;
+			}
+			createNote(item, title, content).then((note) => {
+				setPaneStatus(panel, t("noteCreated"), "ok");
+				renderNoteList(win, doc, panel, item);
+				openNote(note.id);
+			}).catch((e) => {
+				logError(e);
+				setPaneStatus(panel, String(e.message || e), "error");
+			});
+		});
+		toolbar.appendChild(createButton);
+		panel.appendChild(toolbar);
+		panel.appendChild(element(doc, "div", { class: "rw-hint" }, t("notesHint")));
+		panel.appendChild(element(doc, "div", { class: "rw-notes" }));
+		panel.appendChild(element(doc, "div", { class: "rw-label" }, t("annotationListLabel")));
+		panel.appendChild(element(doc, "div", { class: "rw-annotations" }));
+		panel.appendChild(element(doc, "div", { class: "rw-status" }, ""));
+		renderNoteList(win, doc, panel, item);
+		renderAnnotationList(win, doc, panel, item);
+	}
+
+	function renderAnnotationList(win, doc, panel, item) {
+		const list = panel.querySelector(".rw-annotations");
+		if (!list) {
+			return;
+		}
+		list.textContent = "";
+		const annotations = itemAnnotations(item);
+		if (!annotations.length) {
+			list.appendChild(element(doc, "div", { class: "rw-empty" }, t("noAnnotations")));
+			return;
+		}
+		annotations.forEach((entry) => {
+			const row = element(doc, "div", { class: "rw-annotation" });
+			const meta = element(doc, "div", { class: "rw-annotation-meta" });
+			const page = entry.pageLabel ? t("annotationPage", entry.pageLabel) : t("annotationNoPage");
+			meta.appendChild(element(doc, "span", { class: "rw-annotation-type" }, annotationTypeLabel(entry.type)));
+			meta.appendChild(element(doc, "span", { class: "rw-annotation-page" }, page));
+			if (entry.color) {
+				const swatch = element(doc, "span", { class: "rw-annotation-color" });
+				swatch.style.backgroundColor = entry.color;
+				swatch.title = entry.color;
+				meta.appendChild(swatch);
+			}
+			row.appendChild(meta);
+			if (entry.text) {
+				row.appendChild(element(doc, "div", { class: "rw-annotation-text" }, entry.text));
+			}
+			if (entry.comment) {
+				row.appendChild(element(doc, "div", { class: "rw-annotation-comment" }, entry.comment));
+			}
+			const actions = element(doc, "div", { class: "rw-annotation-actions" });
+			const open = element(
+				doc,
+				"button",
+				{ class: "rw-button rw-annotation-open", type: "button" },
+				t("annotationOpen")
+			);
+			open.addEventListener("click", () => {
+				if (!openAnnotation(entry.attachmentID, entry.key)) {
+					setPaneStatus(panel, t("annotationOpenFailed"), "error");
+				}
+			});
+			actions.appendChild(open);
+			row.appendChild(actions);
+			list.appendChild(row);
+		});
+	}
+
+	function renderNoteList(win, doc, panel, item) {
+		const list = panel.querySelector(".rw-notes");
+		if (!list) {
+			return;
+		}
+		list.textContent = "";
+		const notes = listNotes(item);
+		if (!notes.length) {
+			list.appendChild(element(doc, "div", { class: "rw-empty" }, t("noNotes")));
+			return;
+		}
+		notes.forEach((entry) => {
+			const row = element(doc, "div", { class: "rw-note" });
+			const main = element(doc, "div", { class: "rw-note-main" });
+			main.appendChild(element(doc, "div", { class: "rw-note-title" }, entry.title));
+			if (entry.preview) {
+				main.appendChild(element(doc, "div", { class: "rw-note-preview" }, entry.preview));
+			}
+			row.appendChild(main);
+
+			const actions = element(doc, "div", { class: "rw-note-actions" });
+			const open = element(doc, "button", { class: "rw-button rw-note-open", type: "button" }, t("openNote"));
+			open.addEventListener("click", () => {
+				if (!openNote(entry.id)) {
+					setPaneStatus(panel, t("noteOpenFailed"), "error");
+				}
+			});
+			actions.appendChild(open);
+
+			const remove = element(
+				doc,
+				"button",
+				{ class: "rw-button rw-note-delete", type: "button" },
+				t("deleteNote")
+			);
+			remove.addEventListener("click", () => {
+				if (!confirmWindow(win, t("noteDeleteConfirm", entry.title))) {
+					return;
+				}
+				deleteNote(entry.id).then((deleted) => {
+					if (!deleted) {
+						setPaneStatus(panel, t("noteDeleteFailed"), "error");
+						return;
+					}
+					setPaneStatus(panel, t("noteDeleted"), "ok");
+					renderNoteList(win, doc, panel, item);
+				}).catch((e) => {
+					logError(e);
+					setPaneStatus(panel, String(e.message || e), "error");
+				});
+			});
+			actions.appendChild(remove);
+			row.appendChild(actions);
+			list.appendChild(row);
+		});
+	}
+
+	function buildTagsPanel(win, doc, panel, item) {
+		panel.appendChild(element(doc, "div", { class: "rw-hint" }, t("tagsHint")));
+
+		const form = element(doc, "div", { class: "rw-tag-form" });
+		const listID = `rw-tag-suggestions-${item.id}`;
+		const input = element(doc, "input", {
+			class: "rw-input rw-tag-input",
+			type: "text",
+			placeholder: t("tagInputPlaceholder"),
+			list: listID,
+			"aria-label": t("tagSuggestions"),
+		});
+		const datalist = element(doc, "datalist", { id: listID });
+		const addButton = element(
+			doc,
+			"button",
+			{ class: "rw-button rw-primary rw-tag-add", type: "button" },
+			t("addTag")
+		);
+		const refreshSuggestions = () => {
+			suggestTags(item.libraryID, input.value.trim(), 8).then((names) => {
+				datalist.textContent = "";
+				names.forEach((name) => datalist.appendChild(element(doc, "option", { value: name })));
+			}).catch((e) => logError(e));
+		};
+		const submit = () => {
+			const name = String(input.value || "").trim();
+			if (!name) {
+				setPaneStatus(panel, t("tagMissing"), "error");
+				input.focus();
+				return;
+			}
+			addTag(item, name).then((result) => {
+				if (!result.ok) {
+					setPaneStatus(panel, result.reason === "duplicate" ? t("tagDuplicate") : t("tagMissing"), "error");
+					return;
+				}
+				input.value = "";
+				setPaneStatus(panel, t("tagAdded"), "ok");
+				renderTagList(win, doc, panel, item);
+				refreshSuggestions();
+			}).catch((e) => {
+				logError(e);
+				setPaneStatus(panel, String(e.message || e), "error");
+			});
+		};
+		addButton.addEventListener("click", submit);
+		input.addEventListener("keydown", (event) => {
+			if (event.key === "Enter") {
+				event.preventDefault();
+				submit();
+			}
+		});
+		input.addEventListener("input", refreshSuggestions);
+		form.appendChild(input);
+		form.appendChild(addButton);
+		panel.appendChild(form);
+		panel.appendChild(datalist);
+
+		panel.appendChild(element(doc, "div", { class: "rw-tags" }));
+		panel.appendChild(element(doc, "div", { class: "rw-status" }, ""));
+		renderTagList(win, doc, panel, item);
+		refreshSuggestions();
+	}
+
+	function renderTagList(win, doc, panel, item) {
+		const list = panel.querySelector(".rw-tags");
+		if (!list) {
+			return;
+		}
+		list.textContent = "";
+		const tags = listTags(item);
+		if (!tags.length) {
+			list.appendChild(element(doc, "div", { class: "rw-empty" }, t("noTags")));
+			return;
+		}
+		tags.forEach((entry) => {
+			const chip = element(doc, "span", { class: "rw-tag" + (entry.type ? " is-auto" : "") });
+			chip.appendChild(element(doc, "span", { class: "rw-tag-name" }, entry.name));
+			const remove = element(doc, "button", {
+				class: "rw-tag-remove",
+				type: "button",
+				title: t("removeTag"),
+				"aria-label": `${t("removeTag")}: ${entry.name}`,
+			}, "\u00d7");
+			remove.addEventListener("click", () => {
+				removeTag(item, entry.name).then((removed) => {
+					if (!removed) {
+						setPaneStatus(panel, t("tagRemoveFailed"), "error");
+						return;
+					}
+					setPaneStatus(panel, t("tagRemoved"), "ok");
+					renderTagList(win, doc, panel, item);
+				}).catch((e) => {
+					logError(e);
+					setPaneStatus(panel, String(e.message || e), "error");
+				});
+			});
+			chip.appendChild(remove);
+			list.appendChild(chip);
+		});
+	}
+
+	function buildReadmePanel(win, doc, panel, item) {
+		const toolbar = element(doc, "div", { class: "rw-actions" });
+		const importButton = element(
+			doc,
+			"button",
+			{ class: "rw-button rw-primary rw-readme-import", type: "button" },
+			t("importReadme")
+		);
+		importButton.addEventListener("click", () => {
+			importReadmeFlow(win, [item])
+				.then(() => renderReadmePanel(win, doc, panel, item))
+				.catch((e) => logError(e));
+		});
+		toolbar.appendChild(importButton);
+
+		const refreshButton = element(
+			doc,
+			"button",
+			{ class: "rw-button rw-readme-refresh", type: "button" },
+			t("refresh")
+		);
+		refreshButton.addEventListener("click", () => {
+			renderReadmePanel(win, doc, panel, item);
+		});
+		toolbar.appendChild(refreshButton);
+		panel.appendChild(toolbar);
+
+		panel.appendChild(element(doc, "div", { class: "rw-hint" }, t("readmeHint")));
+
+		const layout = element(doc, "div", { class: "rw-readme" });
+		layout.appendChild(element(doc, "div", { class: "rw-readme-list" }));
+		layout.appendChild(element(doc, "div", { class: "rw-readme-viewer" }));
+		panel.appendChild(layout);
+		panel.appendChild(element(doc, "div", { class: "rw-status" }, ""));
+
+		renderReadmePanel(win, doc, panel, item);
+	}
+
+	async function loadReadmeInto(win, doc, panel, attachment) {
+		const viewer = panel.querySelector(".rw-readme-viewer");
+		if (!viewer) {
+			return;
+		}
+		viewer.textContent = "";
+		const header = element(doc, "div", { class: "rw-readme-header" });
+		const title = attachment.getField("title") || attachment.attachmentFilename || "README";
+		header.appendChild(element(doc, "div", { class: "rw-readme-title" }, title));
+		const link = element(doc, "a", {
+			class: "rw-readme-link",
+			href: `zotero://select/library/items/${attachment.key}`,
+		}, t("readmeOpenItem"));
+		header.appendChild(link);
+		viewer.appendChild(header);
+
+		const content = element(doc, "div", { class: "rw-readme-content" });
+		viewer.appendChild(content);
+		content.appendChild(element(doc, "div", { class: "rw-empty" }, t("readmeLoading")));
+
+		let text = "";
+		try {
+			text = await readAttachmentText(attachment);
+		}
+		catch (e) {
+			logError(e);
+		}
+		if (!text) {
+			content.textContent = "";
+			content.appendChild(element(doc, "div", { class: "rw-empty" }, t("readmeLoadFailed")));
+			return;
+		}
+		const truncated = text.length > README_VIEW_CHARS;
+		const shown = truncated ? text.slice(0, README_VIEW_CHARS) : text;
+		content.textContent = "";
+		try {
+			content.innerHTML = markdownToHtml(shown);
+		}
+		catch (e) {
+			content.textContent = shown;
+		}
+		if (truncated) {
+			content.appendChild(
+				element(doc, "div", { class: "rw-empty" }, t("readmeTruncated", README_VIEW_CHARS))
+			);
+		}
+	}
+
+	function renderReadmePanel(win, doc, panel, item) {
+		const list = panel.querySelector(".rw-readme-list");
+		const viewer = panel.querySelector(".rw-readme-viewer");
+		if (!list || !viewer) {
+			return;
+		}
+		list.textContent = "";
+		viewer.textContent = "";
+		const docs = relatedReadmeAttachments(item);
+		if (!docs.length) {
+			list.appendChild(element(doc, "div", { class: "rw-empty" }, t("noLinkedDocs")));
+			viewer.appendChild(element(doc, "div", { class: "rw-empty" }, t("readmeSelect")));
+			return;
+		}
+		const buttons = [];
+		const select = (index) => {
+			buttons.forEach((button, buttonIndex) => {
+				button.classList.toggle("is-active", buttonIndex === index);
+			});
+			loadReadmeInto(win, doc, panel, docs[index]).catch((e) => logError(e));
+		};
+		docs.forEach((attachment, index) => {
+			const label = attachment.getField("title") || attachment.attachmentFilename || "README";
+			const button = element(doc, "button", {
+				class: "rw-button rw-readme-doc",
+				type: "button",
+			}, label);
+			button.addEventListener("click", () => select(index));
+			buttons.push(button);
+			list.appendChild(button);
+		});
+		select(0);
 	}
 
 	function openPreferences() {
@@ -2041,12 +2785,6 @@ var ResearchWorkbench = (function () {
 							importReadmeFlow(win, selectedItems(win));
 						},
 					},
-					{
-						menuType: "menuitem",
-						l10nID: "research-workbench-menu-tools-prefs",
-						icon,
-						onCommand: () => openPreferences(),
-					},
 				],
 			},
 			{
@@ -2061,12 +2799,6 @@ var ResearchWorkbench = (function () {
 							const win = getMainWindow();
 							importReadmeFlow(win, selectedItems(win));
 						},
-					},
-					{
-						menuType: "menuitem",
-						l10nID: "research-workbench-menu-item-prefs",
-						icon,
-						onCommand: () => openPreferences(),
 					},
 				],
 			},
@@ -2199,6 +2931,61 @@ var ResearchWorkbench = (function () {
 				},
 				stopChat: () => stopActiveRun(),
 				isChatRunning: () => isRunning(),
+				listNotes: async (itemOrID) => {
+					const item = await chatTarget(itemOrID);
+					return item ? listNotes(item) : [];
+				},
+				createNote: async (itemOrID, title, body) => {
+					const item = await chatTarget(itemOrID);
+					if (!item) {
+						throw new Error(t("noSelection"));
+					}
+					const note = await createNote(item, title, body);
+					return { id: note.id, title: noteTitle(note) };
+				},
+				openNote,
+				deleteNote,
+				listTags: async (itemOrID) => {
+					const item = await chatTarget(itemOrID);
+					return item ? listTags(item) : [];
+				},
+				addTag: async (itemOrID, name) => {
+					const item = await chatTarget(itemOrID);
+					if (!item) {
+						return { ok: false, reason: "no-item" };
+					}
+					return addTag(item, name);
+				},
+				removeTag: async (itemOrID, name) => {
+					const item = await chatTarget(itemOrID);
+					return item ? removeTag(item, name) : false;
+				},
+				suggestTags,
+				listAnnotations: async (itemOrID) => {
+					const item = await chatTarget(itemOrID);
+					return item ? itemAnnotations(item) : [];
+				},
+				openAnnotation,
+				readmeDocs: async (itemOrID) => {
+					const item = await chatTarget(itemOrID);
+					if (!item) {
+						return [];
+					}
+					return relatedReadmeAttachments(item).map((attachment) => ({
+						id: attachment.id,
+						key: String(attachment.key || ""),
+						title: String(
+							attachment.getField("title") || attachment.attachmentFilename || "README"
+						),
+					}));
+				},
+				readDocText: async (attachmentID, limit) => {
+					const attachment = Zotero.Items.get(attachmentID);
+					if (!attachment || !attachment.isAttachment || !attachment.isAttachment()) {
+						return "";
+					}
+					return readAttachmentText(attachment, limit || README_VIEW_CHARS);
+				},
 				openPreferences,
 			};
 			// A bootstrap add-on that starts during APP_STARTUP does not always

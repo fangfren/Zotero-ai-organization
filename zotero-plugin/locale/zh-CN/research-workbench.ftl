@@ -1,11 +1,9 @@
 research-workbench-section-header = 研究助手
 research-workbench-section-sidenav =
-    .tooltiptext = AI 对话
+    .tooltiptext = 研究助手
 
 research-workbench-menu-tools-import = 为选中文献导入 README
-research-workbench-menu-tools-prefs = 研究助手设置
 research-workbench-menu-item-import = 导入 README 并关联到这篇文献
-research-workbench-menu-item-prefs = 研究助手设置
 
 research-workbench-prefs-intro = AI 对话通过本机已安装并已登录的 Codex CLI 完成，不需要 API Key，也不会由插件另行请求模型服务。
 research-workbench-prefs-codex-heading = Codex 连接

@@ -1,11 +1,9 @@
 research-workbench-section-header = Research Workbench
 research-workbench-section-sidenav =
-    .tooltiptext = AI Chat
+    .tooltiptext = Research Workbench
 
 research-workbench-menu-tools-import = Import README for Selected Items
-research-workbench-menu-tools-prefs = Research Workbench Settings
 research-workbench-menu-item-import = Import README and Link to This Item
-research-workbench-menu-item-prefs = Research Workbench Settings
 
 research-workbench-prefs-intro = AI chat uses the Codex CLI already installed and signed in on this computer. The plugin does not require an API key and does not send a separate request to a model provider.
 research-workbench-prefs-codex-heading = Codex connection

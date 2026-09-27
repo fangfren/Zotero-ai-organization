@@ -136,6 +136,366 @@
 	color: #4f8a4f;
 }
 
+/* ---------------------------------------------------- workbench tabs */
+
+.rw-tabs {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 2px;
+	padding-bottom: 4px;
+	border-bottom: 1px solid color-mix(in srgb, currentColor 18%, transparent);
+}
+
+.rw-tab {
+	min-height: 26px;
+	padding: 4px 10px;
+	font: inherit;
+	color: inherit;
+	background: transparent;
+	border: 1px solid transparent;
+	border-radius: 4px;
+	cursor: pointer;
+}
+
+.rw-tab:hover {
+	background: color-mix(in srgb, currentColor 8%, transparent);
+}
+
+.rw-tab.is-active {
+	font-weight: 600;
+	background: color-mix(in srgb, Highlight 16%, ButtonFace);
+	border-color: color-mix(in srgb, Highlight 40%, transparent);
+}
+
+.rw-panels {
+	min-width: 0;
+}
+
+.rw-panel {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	min-width: 0;
+}
+
+.rw-panel[hidden] {
+	display: none;
+}
+
+/* ------------------------------------------------------- notes tab */
+
+.rw-notes {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+	max-height: 40vh;
+	overflow: auto;
+}
+
+.rw-note {
+	display: flex;
+	align-items: flex-start;
+	gap: 6px;
+	padding: 6px 8px;
+	background: color-mix(in srgb, currentColor 5%, transparent);
+	border-radius: 4px;
+}
+
+.rw-note-main {
+	display: flex;
+	flex: 1 1 auto;
+	flex-direction: column;
+	gap: 2px;
+	min-width: 0;
+}
+
+.rw-note-title {
+	font-weight: 600;
+	line-height: 1.4;
+	overflow-wrap: anywhere;
+}
+
+.rw-note-preview {
+	font-size: 11px;
+	line-height: 1.4;
+	opacity: 0.72;
+	overflow-wrap: anywhere;
+}
+
+.rw-note-actions {
+	display: flex;
+	flex-shrink: 0;
+	gap: 4px;
+}
+
+/* -------------------------------------------------------- tags tab */
+
+.rw-tag-form {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	min-width: 0;
+}
+
+.rw-tag-input {
+	flex: 1 1 auto;
+}
+
+.rw-tags {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 6px;
+	max-height: 30vh;
+	overflow: auto;
+}
+
+.rw-tag {
+	display: inline-flex;
+	align-items: center;
+	gap: 2px;
+	max-width: 100%;
+	padding: 2px 3px 2px 8px;
+	line-height: 1.4;
+	background: color-mix(in srgb, Highlight 14%, transparent);
+	border: 1px solid color-mix(in srgb, currentColor 18%, transparent);
+	border-radius: 999px;
+}
+
+.rw-tag.is-auto {
+	border-style: dashed;
+}
+
+.rw-tag-name {
+	min-width: 0;
+	overflow-wrap: anywhere;
+}
+
+.rw-tag-remove {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 18px;
+	height: 18px;
+	padding: 0;
+	font: inherit;
+	font-size: 13px;
+	line-height: 1;
+	color: inherit;
+	background: transparent;
+	border: 0;
+	border-radius: 50%;
+	cursor: pointer;
+}
+
+.rw-tag-remove:hover {
+	background: color-mix(in srgb, currentColor 16%, transparent);
+}
+
+/* --------------------------------------------------------- chat pane */
+
+.rw-annotations {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+	max-height: 40vh;
+	overflow: auto;
+}
+
+.rw-annotation {
+	display: flex;
+	flex-direction: column;
+	gap: 3px;
+	padding: 6px 8px;
+	background: color-mix(in srgb, currentColor 5%, transparent);
+	border-radius: 4px;
+}
+
+.rw-annotation-meta {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	font-size: 11px;
+	line-height: 1.4;
+	opacity: 0.78;
+}
+
+.rw-annotation-type {
+	font-weight: 600;
+}
+
+.rw-annotation-color {
+	width: 10px;
+	height: 10px;
+	border: 1px solid color-mix(in srgb, currentColor 30%, transparent);
+	border-radius: 50%;
+}
+
+.rw-annotation-text {
+	line-height: 1.45;
+	overflow-wrap: anywhere;
+	user-select: text;
+}
+
+.rw-annotation-comment {
+	font-size: 11px;
+	line-height: 1.45;
+	overflow-wrap: anywhere;
+	opacity: 0.82;
+	user-select: text;
+}
+
+.rw-annotation-actions {
+	display: flex;
+	gap: 4px;
+}
+
+/* -------------------------------------------------------- readme pane */
+
+.rw-readme {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+	min-width: 0;
+}
+
+.rw-readme-list {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 6px;
+	max-height: 120px;
+	overflow: auto;
+}
+
+.rw-readme-doc {
+	max-width: 100%;
+	overflow-wrap: anywhere;
+	text-align: start;
+}
+
+.rw-readme-doc.is-active {
+	font-weight: 600;
+	background: color-mix(in srgb, Highlight 16%, ButtonFace);
+	border-color: color-mix(in srgb, Highlight 40%, transparent);
+}
+
+.rw-readme-viewer {
+	box-sizing: border-box;
+	min-height: 220px;
+	max-height: 52vh;
+	padding: 8px;
+	overflow: auto;
+	background: color-mix(in srgb, Field 88%, Canvas);
+	border: 1px solid color-mix(in srgb, currentColor 18%, transparent);
+	border-radius: 4px;
+}
+
+.rw-readme-header {
+	display: flex;
+	align-items: baseline;
+	justify-content: space-between;
+	gap: 8px;
+	margin-bottom: 6px;
+	padding-bottom: 6px;
+	border-bottom: 1px solid color-mix(in srgb, currentColor 15%, transparent);
+}
+
+.rw-readme-title {
+	font-weight: 600;
+	line-height: 1.4;
+	overflow-wrap: anywhere;
+}
+
+.rw-readme-link {
+	flex-shrink: 0;
+	font-size: 11px;
+}
+
+.rw-readme-content {
+	line-height: 1.5;
+	overflow-wrap: anywhere;
+	white-space: normal;
+	user-select: text;
+}
+
+.rw-readme-content > :first-child {
+	margin-top: 0;
+}
+
+.rw-readme-content > :last-child {
+	margin-bottom: 0;
+}
+
+.rw-readme-content p,
+.rw-readme-content ul,
+.rw-readme-content ol,
+.rw-readme-content blockquote,
+.rw-readme-content pre,
+.rw-readme-content table {
+	margin: 0.45em 0;
+}
+
+.rw-readme-content h1,
+.rw-readme-content h2,
+.rw-readme-content h3,
+.rw-readme-content h4,
+.rw-readme-content h5,
+.rw-readme-content h6 {
+	margin: 0.7em 0 0.35em;
+	font-size: 1.05em;
+	line-height: 1.4;
+}
+
+.rw-readme-content ul,
+.rw-readme-content ol {
+	padding-inline-start: 1.35em;
+}
+
+.rw-readme-content blockquote {
+	padding-inline-start: 8px;
+	border-inline-start: 2px solid color-mix(in srgb, currentColor 28%, transparent);
+	opacity: 0.84;
+}
+
+.rw-readme-content code {
+	padding: 1px 3px;
+	font-family: monospace;
+	font-size: 0.94em;
+	background: color-mix(in srgb, currentColor 9%, transparent);
+	border-radius: 2px;
+}
+
+.rw-readme-content pre {
+	max-width: 100%;
+	padding: 6px;
+	overflow: auto;
+	white-space: pre;
+	background: color-mix(in srgb, currentColor 8%, transparent);
+	border-radius: 3px;
+}
+
+.rw-readme-content pre code {
+	padding: 0;
+	background: transparent;
+}
+
+.rw-readme-content table {
+	display: block;
+	max-width: 100%;
+	overflow-x: auto;
+	border-collapse: collapse;
+}
+
+.rw-readme-content th,
+.rw-readme-content td {
+	padding: 3px 5px;
+	text-align: start;
+	border: 1px solid color-mix(in srgb, currentColor 22%, transparent);
+}
+
+.rw-readme-content a {
+	overflow-wrap: anywhere;
+}
+
 /* --------------------------------------------------------- chat pane */
 
 .rw-chat {
