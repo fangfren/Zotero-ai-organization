@@ -33,7 +33,9 @@ var ResearchWorkbench = (function () {
 	const TEXT_EXTENSIONS = [".md", ".markdown", ".mdown", ".txt", ".rst", ".text"];
 	const LOCAL_TEXT_EXTENSIONS = [".md", ".markdown", ".mdown", ".txt", ".rst"];
 	const XHTML_NS = "http://www.w3.org/1999/xhtml";
+	const XUL_NS = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul";
 	const STYLE_ID = "research-workbench-styles";
+	const TOOLBAR_BUTTON_ID = "research-workbench-toolbar-button";
 	const FTL_FILE = "research-workbench.ftl";
 
 	const TEMPLATES = {
@@ -208,6 +210,10 @@ var ResearchWorkbench = (function () {
 			settingsSaved: "Settings saved.",
 			settingsReset: "Default settings restored.",
 			prefsUnavailable: "The Research Workbench plugin is not available. Disable and re-enable it, then try again.",
+			toolbarTooltip: "Research Workbench",
+			toolbarImport: "Import README for Selected Items",
+			toolbarReport: "Generate AI Report",
+			toolbarSettings: "Research Workbench Settings",
 		},
 		zh: {
 			pluginName: "研究助手",
@@ -268,6 +274,10 @@ var ResearchWorkbench = (function () {
 			settingsSaved: "设置已保存。",
 			settingsReset: "已恢复默认设置。",
 			prefsUnavailable: "研究助手插件尚未完成加载，请禁用后重新启用插件再试。",
+			toolbarTooltip: "研究助手",
+			toolbarImport: "为选中文献导入 README",
+			toolbarReport: "生成 AI 研究报告",
+			toolbarSettings: "研究助手设置",
 		},
 	};
 
@@ -1826,6 +1836,113 @@ var ResearchWorkbench = (function () {
 		}
 	}
 
+	function xulElement(doc, tag) {
+		if (doc.createXULElement) {
+			return doc.createXULElement(tag);
+		}
+		return doc.createElementNS(XUL_NS, tag);
+	}
+
+	function injectToolbarButton(win, rootURI, attempt) {
+		const tries = Number(attempt) || 0;
+		try {
+			const doc = win && win.document;
+			if (!doc || win.closed || doc.getElementById(TOOLBAR_BUTTON_ID)) {
+				return;
+			}
+			const toolbar = doc.getElementById("zotero-items-toolbar");
+			if (!toolbar) {
+				// The main window can be handed to the plugin before its toolbar
+				// markup is ready. Retry briefly instead of silently giving up.
+				if (tries < 30) {
+					win.setTimeout(() => injectToolbarButton(win, rootURI, tries + 1), 500);
+				}
+				return;
+			}
+
+			const button = xulElement(doc, "toolbarbutton");
+			button.id = TOOLBAR_BUTTON_ID;
+			button.className = "zotero-tb-button research-workbench-toolbar-button";
+			button.setAttribute("type", "menu");
+			button.setAttribute("wantdropmarker", "true");
+			button.setAttribute("tabindex", "-1");
+			button.setAttribute("data-l10n-id", "research-workbench-toolbar-button");
+			button.setAttribute("tooltiptext", t("toolbarTooltip"));
+			button.style.setProperty(
+				"list-style-image",
+				`url("${rootURI}content/icons/workbench-20.svg")`
+			);
+			button.style.setProperty("-moz-context-properties", "fill,fill-opacity");
+			button.style.setProperty("fill", "currentColor");
+
+			const popup = xulElement(doc, "menupopup");
+			const entries = [
+				{
+					l10nID: "research-workbench-toolbar-import",
+					label: t("toolbarImport"),
+					onCommand: () => importReadmeFlow(win, selectedItems(win)),
+				},
+				{
+					l10nID: "research-workbench-toolbar-report",
+					label: t("toolbarReport"),
+					onCommand: () => generateReport(win, selectedItems(win), {}),
+				},
+				{ separator: true },
+				{
+					l10nID: "research-workbench-toolbar-prefs",
+					label: t("toolbarSettings"),
+					onCommand: () => openPreferences(),
+				},
+			];
+			for (const entry of entries) {
+				if (entry.separator) {
+					popup.appendChild(xulElement(doc, "menuseparator"));
+					continue;
+				}
+				const item = xulElement(doc, "menuitem");
+				item.setAttribute("data-l10n-id", entry.l10nID);
+				item.setAttribute("label", entry.label);
+				item.addEventListener("command", () => {
+					try {
+						const result = entry.onCommand();
+						if (result && typeof result.catch === "function") {
+							result.catch((e) => logError(e));
+						}
+					}
+					catch (e) {
+						logError(e);
+					}
+				});
+				popup.appendChild(item);
+			}
+			button.appendChild(popup);
+
+			const spacer = toolbar.querySelector('spacer[flex="1"]');
+			if (spacer) {
+				toolbar.insertBefore(button, spacer);
+			}
+			else {
+				toolbar.appendChild(button);
+			}
+		}
+		catch (e) {
+			logError(e);
+		}
+	}
+
+	function removeToolbarButton(win) {
+		try {
+			const doc = win && win.document;
+			const button = doc && doc.getElementById(TOOLBAR_BUTTON_ID);
+			if (button) {
+				button.remove();
+			}
+		}
+		catch (e) {
+			// window already gone
+		}
+	}
+
 	function element(doc, tag, attributes, text) {
 		const node = doc.createElementNS(XHTML_NS, tag);
 		Object.entries(attributes || {}).forEach(([key, value]) => {
@@ -2156,6 +2273,7 @@ var ResearchWorkbench = (function () {
 			Zotero.ResearchWorkbench = {
 				version,
 				prefPrefix: PREF_PREFIX,
+				sectionID: this._sectionID,
 				getPref,
 				setPref,
 				localize: t,
@@ -2167,6 +2285,25 @@ var ResearchWorkbench = (function () {
 				generateReport: (options) => generateReport(getMainWindow(), selectedItems(getMainWindow()), options),
 				openPreferences,
 			};
+			// A bootstrap add-on that starts during APP_STARTUP does not always
+			// receive onMainWindowLoad for the window that is already opening.
+			const attachToOpenWindows = () => {
+				try {
+					const windows = typeof Zotero.getMainWindows === "function"
+						? Zotero.getMainWindows()
+						: [Zotero.getMainWindow()];
+					for (const win of windows) {
+						if (win) {
+							void this.onMainWindowLoad(win);
+						}
+					}
+				}
+				catch (e) {
+					logError(e);
+				}
+			};
+			attachToOpenWindows();
+			setTimeout(attachToOpenWindows, 3000);
 			Zotero.debug(`Research Workbench ${version} started`);
 		},
 
@@ -2179,15 +2316,18 @@ var ResearchWorkbench = (function () {
 				logError(e);
 			}
 			injectStyles(window, this.rootURI);
+			injectToolbarButton(window, this.rootURI);
 		},
 
 		async onMainWindowUnload(window) {
 			this._windows.delete(window);
+			removeToolbarButton(window);
 			removeStyles(window);
 		},
 
 		async shutdown() {
 			for (const win of this._windows) {
+				removeToolbarButton(win);
 				removeStyles(win);
 			}
 			this._windows.clear();

@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Research Workbench",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Import docs into Zotero, link them to literature, and generate research reports with the local Codex CLI.",
   "homepage_url": "https://github.com/fangfren/Zotero-ai-organization",
   "author": "fangfren",

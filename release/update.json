@@ -3,8 +3,8 @@
     "zotero-research-workbench@fangfren": {
       "updates": [
         {
-          "version": "1.0.0",
-          "update_link": "https://raw.githubusercontent.com/fangfren/Zotero-ai-organization/main/release/zotero-research-workbench-1.0.0.xpi",
+          "version": "1.0.1",
+          "update_link": "https://raw.githubusercontent.com/fangfren/Zotero-ai-organization/main/release/zotero-research-workbench-1.0.1.xpi",
           "applications": {
             "zotero": {
               "strict_min_version": "6.999",

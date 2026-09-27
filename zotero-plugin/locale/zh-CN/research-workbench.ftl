@@ -2,6 +2,12 @@ research-workbench-section-header = 研究助手
 research-workbench-section-sidenav =
     .tooltiptext = 研究助手
 
+research-workbench-toolbar-button =
+    .tooltiptext = 研究助手
+research-workbench-toolbar-import = 为选中文献导入 README
+research-workbench-toolbar-report = 生成 AI 研究报告
+research-workbench-toolbar-prefs = 研究助手设置
+
 research-workbench-menu-tools-import = 为选中文献导入 README
 research-workbench-menu-tools-report = 生成 AI 研究报告
 research-workbench-menu-tools-prefs = 研究助手设置

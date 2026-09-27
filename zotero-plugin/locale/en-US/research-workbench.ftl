@@ -2,6 +2,12 @@ research-workbench-section-header = Research Workbench
 research-workbench-section-sidenav =
     .tooltiptext = Research Workbench
 
+research-workbench-toolbar-button =
+    .tooltiptext = Research Workbench
+research-workbench-toolbar-import = Import README for Selected Items
+research-workbench-toolbar-report = Generate AI Report
+research-workbench-toolbar-prefs = Research Workbench Settings
+
 research-workbench-menu-tools-import = Import README for Selected Items
 research-workbench-menu-tools-report = Generate AI Report
 research-workbench-menu-tools-prefs = Research Workbench Settings

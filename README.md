@@ -46,6 +46,8 @@ server, or an extra model service. The only AI runtime it calls is `codex`.
   7. Reproducibility checklist
   8. Links to related material
 - Reports saved as native Zotero notes instead of files outside your library.
+- A visible Research Workbench button in the Zotero item toolbar, with direct
+  entries for README import, report generation, and settings.
 - A native Zotero preferences pane with a built-in Codex connection test.
 - English and Simplified Chinese localization.
 
@@ -76,7 +78,7 @@ codex login
 1. Download the release file:
 
    ```text
-   release/zotero-research-workbench-1.0.0.xpi
+   release/zotero-research-workbench-1.0.1.xpi
    ```
 
    Download it from the repository
@@ -86,7 +88,7 @@ codex login
 2. Open Zotero.
 3. Go to `Tools -> Add-ons`.
 4. Click the gear button and choose `Install Add-on From File...`.
-5. Select `zotero-research-workbench-1.0.0.xpi`.
+5. Select `zotero-research-workbench-1.0.1.xpi`.
 6. Confirm the installation and restart Zotero if requested.
 
 The XPI contains only the plugin. No Python installation, local server, or
@@ -112,10 +114,30 @@ includes the versioned folders under:
 %USERPROFILE%\.codex\bin
 ```
 
+### Where to Click
+
+After the plugin is enabled, look at the toolbar directly above the Zotero item
+list. A Research Workbench icon appears next to the attachment and note buttons.
+Click it to open this menu:
+
+- `Import README for Selected Items`
+- `Generate AI Report`
+- `Research Workbench Settings`
+
+The same actions are also available from `Tools`, the item right-click menu,
+and the `Research Workbench` section on the right side of the item pane.
+
+If the icon is missing, restart Zotero once. If it is still missing, open
+`Tools -> Add-ons`, disable Research Workbench, enable it again, and restart
+Zotero. Updating from an older XPI requires Zotero to reload the plugin before
+the new toolbar button appears.
+
 ### Import a README and Link It to Literature
 
 1. Select one or more regular literature items in Zotero.
 2. Use one of these entry points:
+   - Item toolbar: click the Research Workbench icon and choose
+     `Import README for Selected Items`
    - Item pane: `Research Workbench -> Import README`
    - Right-click menu: `Import README and Link to This Item`
    - Main menu: `Tools -> Import README for Selected Items`
@@ -134,7 +156,8 @@ in the item pane for the selected literature.
 ### Generate a Report
 
 1. Select one or more regular literature items.
-2. Open the `Research Workbench` item pane, or use a Research Workbench menu.
+2. Click the Research Workbench icon in the item toolbar and choose
+   `Generate AI Report`, or use the `Research Workbench` item pane and menu.
 3. Choose a template.
 4. Optionally enter an extra instruction, for example:
 
@@ -249,7 +272,16 @@ metadata, notes, and annotations.
 
 Confirm that Zotero is version 7 or newer, restart Zotero, and check
 `Help -> Debug Output for Troubleshooting`. Temporarily disabling and
-re-enabling the plugin also refreshes its menu and preference registrations.
+re-enabling the plugin also refreshes its toolbar button, menu, item pane, and
+preference registrations.
+
+#### The toolbar icon is missing
+
+Make sure the installed XPI is `1.0.1` or newer. Zotero 7 and 10 show the button
+in the toolbar above the item list, near the attachment and note buttons.
+Restart Zotero after installing or updating, and disable and re-enable the
+plugin if the toolbar is still unchanged. The plugin also remains available
+from `Tools` and the item pane while the button is hidden.
 
 ### Build the XPI
 
@@ -263,7 +295,7 @@ The script validates the required files, reads the version from
 `zotero-plugin/manifest.json`, and writes:
 
 ```text
-release/zotero-research-workbench-1.0.0.xpi
+release/zotero-research-workbench-1.0.1.xpi
 ```
 
 The XPI root contains `manifest.json`, `bootstrap.js`, `prefs.js`, `content/`,
@@ -325,6 +357,8 @@ MIT. See `LICENSE`.
   7. 可复现要点
   8. 相关文献与材料关联
 - 报告直接保存为 Zotero 笔记，不生成游离于文献库之外的文件。
+- 在 Zotero 条目工具栏提供常驻的研究助手按钮，可直接导入 README、
+  生成报告或打开设置。
 - 提供原生 Zotero 设置页和一键 Codex 连接检测。
 - 提供英语和简体中文本地化。
 
@@ -353,7 +387,7 @@ codex login
 1. 找到构建好的插件文件：
 
    ```text
-   release/zotero-research-workbench-1.0.0.xpi
+   release/zotero-research-workbench-1.0.1.xpi
    ```
 
    可以直接从仓库的
@@ -363,7 +397,7 @@ codex login
 2. 打开 Zotero。
 3. 进入 `工具 -> 插件`。
 4. 点击右上角齿轮，选择 `从文件安装插件...`。
-5. 选择 `zotero-research-workbench-1.0.0.xpi`。
+5. 选择 `zotero-research-workbench-1.0.1.xpi`。
 6. 确认安装。如果 Zotero 提示重启，请重启后再使用。
 
 这个 XPI 只包含插件本体，不需要 Python、不需要本地服务器，也不需要其他运行时。
@@ -386,10 +420,27 @@ codex login
 %USERPROFILE%\.codex\bin
 ```
 
+### 界面入口在哪里
+
+插件启用后，Zotero 条目列表上方的工具栏中会出现研究助手图标，位置在
+“添加附件”和“添加笔记”按钮附近。点击图标会展开：
+
+- `为选中文献导入 README`
+- `生成 AI 研究报告`
+- `研究助手设置`
+
+同样的功能也可以从 `工具` 菜单、文献右键菜单，以及条目信息栏右侧的
+`研究助手` 面板进入。
+
+如果看不到图标，请先重启一次 Zotero。如果仍然没有，进入 `工具 -> 插件`，
+先禁用研究助手再重新启用，然后重启 Zotero。从旧版 XPI 更新后，必须让
+Zotero 重新加载插件，新的工具栏按钮才会出现。
+
 ### 导入 README 并关联文献
 
 1. 在 Zotero 中选中一篇或多篇普通文献。
 2. 从以下任意入口执行导入：
+   - 条目工具栏：点击研究助手图标，选择 `为选中文献导入 README`
    - 条目信息栏：`研究助手 -> 导入 README`
    - 文献右键菜单：`导入 README 并关联到这篇文献`
    - 主菜单：`工具 -> 为选中文献导入 README`
@@ -407,7 +458,8 @@ codex login
 ### 生成研究报告
 
 1. 选中一篇或多篇普通文献。
-2. 打开 `研究助手` 条目信息栏，或使用研究助手菜单。
+2. 点击条目工具栏中的研究助手图标并选择 `生成 AI 研究报告`，也可以使用
+   `研究助手` 条目信息栏或菜单。
 3. 选择报告模板。
 4. 根据需要填写补充要求，例如：
 
@@ -512,7 +564,14 @@ OCR。即使全文不可用，报告仍然可以使用元数据、笔记和批�
 
 确认 Zotero 版本不低于 7，重启 Zotero，并查看
 `帮助 -> 调试输出`。也可以在插件管理器中暂时禁用再重新启用，刷新菜单和
-设置页注册。
+设置页注册；工具栏按钮、菜单、条目信息栏和设置页会一起重新加载。
+
+#### 看不到工具栏图标
+
+请确认安装的是 `1.0.1` 或更高版本的 XPI。Zotero 7 和 Zotero 10 会把按钮显示
+在条目列表上方的工具栏中，位置靠近“添加附件”和“添加笔记”按钮。安装或更新
+后需要重启 Zotero；如果工具栏仍然没有变化，请在插件管理器中禁用再重新启用
+研究助手。即使按钮暂时隐藏，也仍然可以通过 `工具` 菜单和条目信息栏使用插件。
 
 ### 构建 XPI
 
@@ -525,7 +584,7 @@ powershell -ExecutionPolicy Bypass -File scripts/build-xpi.ps1
 脚本会检查必要文件、读取 `zotero-plugin/manifest.json` 中的版本号，并输出：
 
 ```text
-release/zotero-research-workbench-1.0.0.xpi
+release/zotero-research-workbench-1.0.1.xpi
 ```
 
 XPI 根目录直接包含 `manifest.json`、`bootstrap.js`、`prefs.js`、`content/`
