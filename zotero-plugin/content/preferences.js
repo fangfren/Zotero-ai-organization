@@ -15,8 +15,6 @@
 		model: "",
 		extraArgs: "",
 		timeout: 600,
-		template: "research",
-		reportLanguage: "auto",
 		includePdfText: true,
 		includeAnnotations: true,
 		includeNotes: true,
@@ -24,9 +22,6 @@
 		includeImportedMaterial: true,
 		maxContextChars: 60000,
 		importContentLimit: 20000,
-		openNoteAfterGeneration: true,
-		addReportTag: true,
-		lastInstruction: "",
 	});
 
 	let initAttempts = 0;
@@ -122,18 +117,6 @@
 		});
 	}
 
-	function bindSelect(id, name) {
-		const control = byID(id);
-		if (!control) {
-			return;
-		}
-		control.value = String(pref(name, DEFAULTS[name]) || DEFAULTS[name]);
-		control.addEventListener("change", () => {
-			setPref(name, String(control.value || DEFAULTS[name]));
-			markSaved();
-		});
-	}
-
 	async function refreshCodexStatus() {
 		const workbench = api();
 		if (!workbench || typeof workbench.codexStatus !== "function") {
@@ -194,9 +177,6 @@
 		bindText("rw-model", "model");
 		bindText("rw-extra-args", "extraArgs");
 		bindNumber("rw-timeout", "timeout", 60, 3600);
-		bindSelect("rw-template", "template");
-		bindSelect("rw-report-language", "reportLanguage");
-		bindText("rw-report-instruction", "lastInstruction");
 		bindCheckbox("rw-include-pdf", "includePdfText");
 		bindCheckbox("rw-include-annotations", "includeAnnotations");
 		bindCheckbox("rw-include-notes", "includeNotes");
@@ -204,8 +184,6 @@
 		bindCheckbox("rw-include-imported", "includeImportedMaterial");
 		bindNumber("rw-max-context-chars", "maxContextChars", 4000, 500000);
 		bindNumber("rw-import-content-limit", "importContentLimit", 1000, 100000);
-		bindCheckbox("rw-open-note", "openNoteAfterGeneration");
-		bindCheckbox("rw-add-report-tag", "addReportTag");
 	}
 
 	function init() {

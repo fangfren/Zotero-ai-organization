@@ -43,32 +43,8 @@
 	</html:div>
 	<html:div class="rw-pref-status" id="rw-codex-status" role="status"></html:div>
 
-	<html:div class="rw-pref-section" data-l10n-id="research-workbench-prefs-report-heading"></html:div>
-
-	<html:div class="rw-pref-row">
-		<html:label class="rw-label" for="rw-template" data-l10n-id="research-workbench-prefs-template"></html:label>
-		<html:select class="rw-select" id="rw-template">
-			<html:option value="research" data-l10n-id="research-workbench-prefs-template-research"></html:option>
-			<html:option value="comparison" data-l10n-id="research-workbench-prefs-template-comparison"></html:option>
-			<html:option value="quick" data-l10n-id="research-workbench-prefs-template-quick"></html:option>
-			<html:option value="custom" data-l10n-id="research-workbench-prefs-template-custom"></html:option>
-		</html:select>
-	</html:div>
-
-	<html:div class="rw-pref-row">
-		<html:label class="rw-label" for="rw-report-language" data-l10n-id="research-workbench-prefs-language"></html:label>
-		<html:select class="rw-select" id="rw-report-language">
-			<html:option value="auto" data-l10n-id="research-workbench-prefs-language-auto"></html:option>
-			<html:option value="zh" data-l10n-id="research-workbench-prefs-language-zh"></html:option>
-			<html:option value="en" data-l10n-id="research-workbench-prefs-language-en"></html:option>
-		</html:select>
-	</html:div>
-
-	<html:div class="rw-pref-row">
-		<html:label class="rw-label" for="rw-report-instruction" data-l10n-id="research-workbench-prefs-instruction"></html:label>
-		<html:textarea class="rw-textarea" id="rw-report-instruction" rows="4"
-			data-l10n-id="research-workbench-prefs-instruction-placeholder"></html:textarea>
-	</html:div>
+	<html:div class="rw-pref-section" data-l10n-id="research-workbench-prefs-chat-heading"></html:div>
+	<html:p class="rw-help" data-l10n-id="research-workbench-prefs-chat-help"></html:p>
 
 	<html:div class="rw-pref-section" data-l10n-id="research-workbench-prefs-context-heading"></html:div>
 	<html:div class="rw-pref-grid">
@@ -104,16 +80,6 @@
 		<html:label class="rw-label" for="rw-import-content-limit" data-l10n-id="research-workbench-prefs-per-doc"></html:label>
 		<html:input class="rw-input" id="rw-import-content-limit" type="number" min="1000" max="100000" step="1000"/>
 		<html:div class="rw-hint" data-l10n-id="research-workbench-prefs-per-doc-help"></html:div>
-	</html:div>
-
-	<html:div class="rw-pref-section" data-l10n-id="research-workbench-prefs-behavior-heading"></html:div>
-	<html:div class="rw-pref-row is-inline">
-		<html:input id="rw-open-note" type="checkbox"/>
-		<html:label for="rw-open-note" data-l10n-id="research-workbench-prefs-open-note"></html:label>
-	</html:div>
-	<html:div class="rw-pref-row is-inline">
-		<html:input id="rw-add-report-tag" type="checkbox"/>
-		<html:label for="rw-add-report-tag" data-l10n-id="research-workbench-prefs-add-tag"></html:label>
 	</html:div>
 
 	<html:p class="rw-help" data-l10n-id="research-workbench-prefs-privacy"></html:p>
