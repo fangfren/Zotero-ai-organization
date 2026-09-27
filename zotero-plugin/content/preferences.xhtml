@@ -1,0 +1,120 @@
+<linkset>
+	<html:link rel="localization" href="research-workbench.ftl"/>
+</linkset>
+
+<html:div xmlns:html="http://www.w3.org/1999/xhtml" class="rw-prefs" id="rw-prefs">
+	<html:p class="rw-help" data-l10n-id="research-workbench-prefs-intro"></html:p>
+
+	<html:div class="rw-pref-section" data-l10n-id="research-workbench-prefs-codex-heading"></html:div>
+	<html:p class="rw-help" data-l10n-id="research-workbench-prefs-codex-help"></html:p>
+
+	<html:div class="rw-pref-row">
+		<html:label class="rw-label" for="rw-codex-path" data-l10n-id="research-workbench-prefs-codex-path"></html:label>
+		<html:input class="rw-input" id="rw-codex-path" type="text"
+			data-l10n-id="research-workbench-prefs-codex-path-placeholder"/>
+		<html:div class="rw-hint" data-l10n-id="research-workbench-prefs-codex-path-help"></html:div>
+	</html:div>
+
+	<html:div class="rw-pref-row">
+		<html:label class="rw-label" for="rw-model" data-l10n-id="research-workbench-prefs-model"></html:label>
+		<html:input class="rw-input" id="rw-model" type="text"
+			data-l10n-id="research-workbench-prefs-model-placeholder"/>
+		<html:div class="rw-hint" data-l10n-id="research-workbench-prefs-model-help"></html:div>
+	</html:div>
+
+	<html:div class="rw-pref-row">
+		<html:label class="rw-label" for="rw-extra-args" data-l10n-id="research-workbench-prefs-extra-args"></html:label>
+		<html:input class="rw-input" id="rw-extra-args" type="text"
+			data-l10n-id="research-workbench-prefs-extra-args-placeholder"/>
+		<html:div class="rw-hint" data-l10n-id="research-workbench-prefs-extra-args-help"></html:div>
+	</html:div>
+
+	<html:div class="rw-pref-row">
+		<html:label class="rw-label" for="rw-timeout" data-l10n-id="research-workbench-prefs-timeout"></html:label>
+		<html:input class="rw-input" id="rw-timeout" type="number" min="60" max="3600" step="30"/>
+		<html:div class="rw-hint" data-l10n-id="research-workbench-prefs-timeout-help"></html:div>
+	</html:div>
+
+	<html:div class="rw-pref-actions">
+		<html:button class="rw-button rw-primary" id="rw-test-codex" type="button"
+			data-l10n-id="research-workbench-prefs-test-button"></html:button>
+		<html:button class="rw-button" id="rw-reset-prefs" type="button"
+			data-l10n-id="research-workbench-prefs-reset-button"></html:button>
+	</html:div>
+	<html:div class="rw-pref-status" id="rw-codex-status" role="status"></html:div>
+
+	<html:div class="rw-pref-section" data-l10n-id="research-workbench-prefs-report-heading"></html:div>
+
+	<html:div class="rw-pref-row">
+		<html:label class="rw-label" for="rw-template" data-l10n-id="research-workbench-prefs-template"></html:label>
+		<html:select class="rw-select" id="rw-template">
+			<html:option value="research" data-l10n-id="research-workbench-prefs-template-research"></html:option>
+			<html:option value="comparison" data-l10n-id="research-workbench-prefs-template-comparison"></html:option>
+			<html:option value="quick" data-l10n-id="research-workbench-prefs-template-quick"></html:option>
+			<html:option value="custom" data-l10n-id="research-workbench-prefs-template-custom"></html:option>
+		</html:select>
+	</html:div>
+
+	<html:div class="rw-pref-row">
+		<html:label class="rw-label" for="rw-report-language" data-l10n-id="research-workbench-prefs-language"></html:label>
+		<html:select class="rw-select" id="rw-report-language">
+			<html:option value="auto" data-l10n-id="research-workbench-prefs-language-auto"></html:option>
+			<html:option value="zh" data-l10n-id="research-workbench-prefs-language-zh"></html:option>
+			<html:option value="en" data-l10n-id="research-workbench-prefs-language-en"></html:option>
+		</html:select>
+	</html:div>
+
+	<html:div class="rw-pref-row">
+		<html:label class="rw-label" for="rw-report-instruction" data-l10n-id="research-workbench-prefs-instruction"></html:label>
+		<html:textarea class="rw-textarea" id="rw-report-instruction" rows="4"
+			data-l10n-id="research-workbench-prefs-instruction-placeholder"></html:textarea>
+	</html:div>
+
+	<html:div class="rw-pref-section" data-l10n-id="research-workbench-prefs-context-heading"></html:div>
+	<html:div class="rw-pref-grid">
+		<html:div class="rw-pref-row is-inline">
+			<html:input id="rw-include-pdf" type="checkbox"/>
+			<html:label for="rw-include-pdf" data-l10n-id="research-workbench-prefs-include-pdf"></html:label>
+		</html:div>
+		<html:div class="rw-pref-row is-inline">
+			<html:input id="rw-include-annotations" type="checkbox"/>
+			<html:label for="rw-include-annotations" data-l10n-id="research-workbench-prefs-include-annotations"></html:label>
+		</html:div>
+		<html:div class="rw-pref-row is-inline">
+			<html:input id="rw-include-notes" type="checkbox"/>
+			<html:label for="rw-include-notes" data-l10n-id="research-workbench-prefs-include-notes"></html:label>
+		</html:div>
+		<html:div class="rw-pref-row is-inline">
+			<html:input id="rw-include-attachments" type="checkbox"/>
+			<html:label for="rw-include-attachments" data-l10n-id="research-workbench-prefs-include-attachments"></html:label>
+		</html:div>
+		<html:div class="rw-pref-row is-inline">
+			<html:input id="rw-include-imported" type="checkbox"/>
+			<html:label for="rw-include-imported" data-l10n-id="research-workbench-prefs-include-imported"></html:label>
+		</html:div>
+	</html:div>
+
+	<html:div class="rw-pref-row">
+		<html:label class="rw-label" for="rw-max-context-chars" data-l10n-id="research-workbench-prefs-max-context"></html:label>
+		<html:input class="rw-input" id="rw-max-context-chars" type="number" min="4000" max="500000" step="1000"/>
+		<html:div class="rw-hint" data-l10n-id="research-workbench-prefs-max-context-help"></html:div>
+	</html:div>
+
+	<html:div class="rw-pref-row">
+		<html:label class="rw-label" for="rw-import-content-limit" data-l10n-id="research-workbench-prefs-per-doc"></html:label>
+		<html:input class="rw-input" id="rw-import-content-limit" type="number" min="1000" max="100000" step="1000"/>
+		<html:div class="rw-hint" data-l10n-id="research-workbench-prefs-per-doc-help"></html:div>
+	</html:div>
+
+	<html:div class="rw-pref-section" data-l10n-id="research-workbench-prefs-behavior-heading"></html:div>
+	<html:div class="rw-pref-row is-inline">
+		<html:input id="rw-open-note" type="checkbox"/>
+		<html:label for="rw-open-note" data-l10n-id="research-workbench-prefs-open-note"></html:label>
+	</html:div>
+	<html:div class="rw-pref-row is-inline">
+		<html:input id="rw-add-report-tag" type="checkbox"/>
+		<html:label for="rw-add-report-tag" data-l10n-id="research-workbench-prefs-add-tag"></html:label>
+	</html:div>
+
+	<html:p class="rw-help" data-l10n-id="research-workbench-prefs-privacy"></html:p>
+</html:div>

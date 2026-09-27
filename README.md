@@ -2,817 +2,553 @@
 
 [English](#english) | [简体中文](#简体中文)
 
-Local-first dashboard for reading, categorizing, annotating, and reporting on a
-Zotero library. It reads the local Zotero SQLite database, exports structured
-notes and metadata, and serves a dependency-free web dashboard.
+Research Workbench is a standalone Zotero plugin that imports README or
+documentation files, links them to Zotero literature items, and generates
+structured research reports through the Codex CLI that is already installed
+and signed in on your computer.
 
-本地优先的文献工作台：阅读、分类、批注并生成 Zotero 文献库报告。直接读取本地
-Zotero SQLite 数据库，导出结构化的笔记与元数据，并提供一个不依赖第三方组件的
-网页仪表盘。
+研究助手是一个独立的 Zotero 插件，可以导入 README 或说明文档、把文档与 Zotero
+文献关联，并通过电脑上已经安装且已登录的 Codex CLI 生成结构化研究报告。
+
+The plugin does **not** require an API key, a Python installation, a local web
+server, or an extra model service. The only AI runtime it calls is `codex`.
+
+插件**不需要 API Key、不需要安装 Python、不需要本地服务器，也不需要额外配置模型
+服务**。它唯一调用的 AI 运行时是 `codex`。
 
 ---
 
 ## English
 
-### Features
+### What You Get
 
-- Reads Zotero collection membership, tags, bibliographic metadata, PDF
-  annotations, notes, and standalone PDF attachments from the local Zotero data
-  directory.
-- Groups items by Zotero collections when collections exist, with keyword-based
-  fallback categories for ungrouped items.
-- Exports one Markdown note per item and preserves user-edited sections across
-  resyncs.
-- Serves a local dashboard with category navigation, search, filters, literature
-  cards, and item-level annotation details.
-- Imports supporting documents in one click: paste a GitHub repository, raw
-  file, or plain text link (the `owner/repo` shorthand works too), drag in local
-  files, or paste text, then link each document to one or more Zotero items.
-- Generates reports with a Codex subscription login instead of an API key: the
-  server calls the locally installed `codex` CLI and reuses the ChatGPT session
-  you already logged in with.
-- Ships report templates, including research question / method / conclusion,
-  multi-paper comparison, quick digest, and free-form custom instructions.
-- Writes reports and JSON state under a local output directory.
-- Does not write to the Zotero database.
+- A real Zotero `.xpi` plugin that can be installed from a single file.
+- README import from `owner/repo`, a GitHub repository URL, a GitHub file URL,
+  a direct Markdown or text URL, or a local file path.
+- Automatic attachment linking:
+  - One selected item: the README is added as a child attachment.
+  - Multiple selected items: the README is added once as a standalone
+    attachment and connected through Zotero related items.
+- Reports generated from Zotero metadata, abstracts, notes, PDF annotations,
+  PDF full text, attachment lists, and imported README files.
+- Four built-in report modes:
+  - Problem, method and findings
+  - Multi-paper comparison
+  - Quick digest
+  - Custom instruction only
+- A default research report template with these sections:
+  1. Problem being solved
+  2. Proposed method and technical route
+  3. Key findings and evidence
+  4. Data, experiment or simulation setup
+  5. Limitations, assumptions and open questions
+  6. Relevance to my research
+  7. Reproducibility checklist
+  8. Links to related material
+- Reports saved as native Zotero notes instead of files outside your library.
+- A native Zotero preferences pane with a built-in Codex connection test.
+- English and Simplified Chinese localization.
 
 ### Requirements
 
-- Python 3.10 or newer
-- Zotero desktop with a local data directory
-- Optional: Codex CLI with a ChatGPT subscription login for report generation
-  (no API key needed)
-- Optional: an OpenAI-compatible API endpoint and key for API report generation
+- Zotero desktop 7 or newer. Zotero 10 is supported.
+- Codex CLI installed on the same computer.
+- A working Codex login. A ChatGPT subscription login is enough. No API key is
+  needed for this plugin.
+- Internet access when Codex sends the assembled context to the service using
+  your signed-in account.
 
-No third-party Python packages are required. The application uses the Python
-standard library.
+Before using the plugin, verify Codex in a terminal:
 
-### Installation
-
-```bash
-git clone https://github.com/fangfren/Zotero-ai-organization.git
-cd Zotero-ai-organization
+```powershell
+codex --version
+codex login status
 ```
 
-If Python 3.10 or newer is installed, the application is ready to run.
+If `codex login status` does not report a login, run:
 
-Creating a virtual environment is optional:
-
-```bash
-python -m venv .venv
-
-# Windows PowerShell
-.\.venv\Scripts\Activate.ps1
-
-# macOS / Linux
-source .venv/bin/activate
+```powershell
+codex login
 ```
 
-### Quick Start
+### Install the Plugin
 
-Windows users can double-click `open-desktop.cmd`; it finds a local Python
-installation, starts the server, waits until port `5187` is ready, and opens
-the dashboard. `run.cmd` only refreshes the exported data. The scripts first
-look for `.venv`, then `python`, then the Windows `py -3` launcher.
-Set `RESEARCH_WORKBENCH_PYTHON` to a specific interpreter path if Python is
-installed in a non-standard location.
-
-macOS and Linux users can run:
-
-```bash
-bash run.sh
-bash start-app.sh
-```
-
-Manual startup also works:
-
-1. Build the dashboard state from Zotero:
-
-   ```bash
-   python sync_zotero.py
-   ```
-
-2. Start the local server:
-
-   ```bash
-   python app_server.py
-   ```
-
-3. Open:
+1. Download the release file:
 
    ```text
-   http://127.0.0.1:5187
+   release/zotero-research-workbench-1.0.0.xpi
    ```
 
-The server stays on `127.0.0.1` by default and does not require internet access.
+   Download it from the repository
+   [release folder](https://github.com/fangfren/Zotero-ai-organization/tree/main/release),
+   or build it locally with the command in "Build the XPI" below.
 
-### Zotero Data Directory
+2. Open Zotero.
+3. Go to `Tools -> Add-ons`.
+4. Click the gear button and choose `Install Add-on From File...`.
+5. Select `zotero-research-workbench-1.0.0.xpi`.
+6. Confirm the installation and restart Zotero if requested.
 
-The default Zotero path is:
+The XPI contains only the plugin. No Python installation, local server, or
+extra runtime is required. The plugin is published with an `update_url`, so
+future versions installed from this repository can be updated from Zotero's
+add-on manager.
 
-```text
-Windows: %USERPROFILE%\Zotero
-macOS / Linux: ~/Zotero
-```
+### First Run
 
-The application reads these files:
+1. Open `Edit -> Settings -> Research Workbench`.
+2. Leave `Codex executable` blank for automatic detection, or enter the full
+   path to `codex.exe`, `codex.cmd`, or your Codex installation directory.
+3. Click `Detect Codex`.
+4. A successful check reports the detected path and the version reported by
+   Codex. It also performs a real `codex exec` call using your current login.
 
-```text
-zotero.sqlite
-zotero.sqlite-wal
-zotero.sqlite-shm
-```
-
-It copies them into `.cache/` and queries the snapshot. Zotero can remain open
-while the application runs.
-
-Override the data directory for a single sync command:
-
-```bash
-python sync_zotero.py --zotero-dir "D:\path\to\Zotero"
-```
-
-For the dashboard's **Sync data** button, set the same directory in the
-environment before starting the server:
-
-```powershell
-# Windows PowerShell
-$env:ZOTERO_DATA_DIR = "D:\path\to\Zotero"
-.\start-app.cmd
-```
-
-```bash
-# macOS / Linux
-export ZOTERO_DATA_DIR="/path/to/Zotero"
-bash start-app.sh
-```
-
-`ZOTERO_DATA_DIR` is inherited by `app_server.py` and by every resync it starts.
-
-### Synchronization
-
-Run `sync_zotero.py` after changing Zotero data:
-
-```bash
-python sync_zotero.py
-```
-
-The dashboard reads the generated `output/data/library.json`. The resync process
-does not modify Zotero.
-
-### Imported Material
-
-The dashboard's **Import documents** dialog keeps supporting documents next to
-the literature itself:
-
-- **One-click README**: paste `owner/repo`, `https://github.com/owner/repo`, a
-  `raw.githubusercontent.com` link, or any plain text/Markdown URL. A repository
-  link is resolved to `README.md`, `README.rst`, `README.txt`, `readme.md`, or
-  `README` on the default branch (`main`, then `master`).
-- **Local files**: drop or select `.md`, `.markdown`, `.txt`, `.rst`, `.json`,
-  `.yml`, `.yaml`, or `.csv` files, several at a time.
-- **Pasted text**: give the document a name and paste the content.
-- **Linking**: tick the Zotero items a document belongs to before importing, or
-  edit the links later. Linked material appears in the item detail panel and is
-  sent to the AI together with that item's notes and annotations.
-
-Imports are stored as Markdown:
+The plugin searches `PATH` and common Codex install locations. On Windows this
+includes the versioned folders under:
 
 ```text
-output/imports/<id>.md      imported content
-output/data/imports.json    index: name, links, size, source, timestamp
+%LOCALAPPDATA%\OpenAI\Codex\bin
+%APPDATA%\npm
+%USERPROFILE%\.codex\bin
 ```
 
-Nothing is written back to Zotero. Deleting an import removes both the file and
-its index entry.
+### Import a README and Link It to Literature
 
-### Configuration
+1. Select one or more regular literature items in Zotero.
+2. Use one of these entry points:
+   - Item pane: `Research Workbench -> Import README`
+   - Right-click menu: `Import README and Link to This Item`
+   - Main menu: `Tools -> Import README for Selected Items`
+3. Enter one of the supported inputs:
+   - `owner/repo`
+   - `https://github.com/owner/repo`
+   - `https://github.com/owner/repo/blob/main/README.md`
+   - A direct `raw.githubusercontent.com` or other direct text URL
+   - A local path such as `C:\projects\demo\README.md`
+   - A UNC path, `file://` URL, or a path beginning with `~/`
 
-Copy example configuration files to local files:
+The imported attachment receives the tag `research-workbench:readme`, which
+makes it easy to find later. Imported Markdown and text attachments are shown
+in the item pane for the selected literature.
 
-Windows PowerShell:
+### Generate a Report
 
-```powershell
-Copy-Item config\categories.example.json config\categories.json
-Copy-Item config\ai.example.json config\ai.json
-```
+1. Select one or more regular literature items.
+2. Open the `Research Workbench` item pane, or use a Research Workbench menu.
+3. Choose a template.
+4. Optionally enter an extra instruction, for example:
 
-macOS / Linux:
-
-```bash
-cp config/categories.example.json config/categories.json
-cp config/ai.example.json config/ai.json
-```
-
-#### Categories
-
-`config/categories.json` defines fallback categories:
-
-```json
-{
-  "default_category_id": "unsorted",
-  "categories": [
-    {
-      "id": "overview",
-      "name": "Overview",
-      "description": "Optional description",
-      "color": "#3f7f76",
-      "keywords": ["review", "overview"],
-      "item_ids": [],
-      "item_keys": []
-    }
-  ]
-}
-```
-
-Fields:
-
-- `id`: stable unique identifier
-- `name`: display name
-- `description`: optional category description
-- `color`: hex color used by the dashboard
-- `keywords`: substrings or lowercase tokens used for automatic assignment
-- `item_ids`: explicit Zotero item IDs assigned to this category
-- `item_keys`: explicit Zotero item keys assigned to this category
-
-When Zotero collections exist, collection membership takes precedence over
-keyword matching.
-
-#### AI Reports
-
-`config/ai.json` selects the report provider:
-
-```json
-{
-  "provider": "codex",
-  "base_url": "https://api.openai.com/v1/chat/completions",
-  "model": "",
-  "api_key": "",
-  "codex_command": "",
-  "codex_model": "",
-  "codex_extra_args": "",
-  "codex_timeout": 600,
-  "report_template": "research"
-}
-```
-
-`provider` accepts:
-
-- `codex` (default): runs the local Codex CLI and reuses your ChatGPT
-  subscription login. No API key is required or used.
-- `api`: calls an OpenAI-compatible chat completions endpoint
-
-**Codex subscription mode**
-
-1. Install the Codex CLI and log in once in a terminal:
-
-   ```bash
-   codex login
+   ```text
+   Focus on the control strategy, simulation settings, and unresolved limitations.
    ```
 
-2. Open **AI settings** in the dashboard. The status row shows the detected
-   executable, its version, the login state, and how many imported documents are
-   linked to items.
-3. Click **Test Codex** to run a real self-check before generating a report.
+5. Click `Generate report`.
 
-The executable is resolved in this order:
+For a single item, the generated note is attached to that item. For multiple
+items, the note is created as a standalone note, linked as a related item to
+each source, and placed in the active collection when possible.
 
-1. `codex_command` in `config/ai.json`, set through the AI settings dialog
-2. the `RESEARCH_WORKBENCH_CODEX` environment variable
-3. the `CODEX_BIN` environment variable
-4. `codex`, `codex.cmd`, or `codex.exe` on `PATH`
-5. common install locations, such as the Codex desktop app bundle and
-   `~/.local/bin`
+Reports are written in Markdown inside a Zotero note. The plugin converts
+headings, lists, tables, quotations, links, and code blocks into HTML so the
+note remains readable in the Zotero note editor.
 
-Optional Codex settings:
+### What Is Sent to Codex
 
-- `codex_model`: model passed to the CLI; empty means the CLI default
-- `codex_extra_args`: extra CLI flags, for example `--sandbox read-only`
-- `codex_timeout`: seconds before a report call is aborted (60-3600, default
-  600)
+The plugin assembles the selected material locally and passes it to the
+signed-in Codex CLI. Depending on the settings, this can include:
 
-For API mode, set `base_url`, `model`, and `api_key`. The API key can also be
-provided through `OPENAI_API_KEY` or `AI_API_KEY`.
+- Title, authors, year, publication, DOI, URL, item type, and abstract.
+- Zotero notes.
+- PDF annotations and comments.
+- Extracted PDF full text.
+- Attachment names and content types.
+- Imported README and documentation attachments.
 
-Report templates, chosen in the report dialog or through `report_template`:
+The plugin itself does not call an AI API and does not contain an API key.
+Codex handles the authenticated request. Review your own privacy requirements
+before sending sensitive or unpublished material.
 
-| Template | Sections |
-|---|---|
-| `research` (default) | 要解决什么问题 / 提出的方法 / 关键发现与证据 / 数据、实验或仿真设置 / 局限、假设与未解决问题 / 对我研究方向的意义 / 可复现要点 / 相关文献关联 |
-| `comparison` | 主题与检索范围 / 各文献要解决的问题 / 方法路线对比 / 指标、数据与结论对比 / 共识与分歧 / 研究空白与机会 / 建议的下一步工作 |
-| `quick` | 一句话结论 / 要解决什么问题 / 提出的方法 / 关键结果 / 局限 / 可以直接复用的点 |
-| `custom` | No fixed sections; the report follows your instructions only |
+### Settings
 
-Section headings are written in the language stored in `app_server.py`, so the
-generated report keeps the same structure for every user.
+The preference pane supports:
 
-### Command Line Options
+- `Codex executable`
+- `Model override`
+- `Extra CLI arguments`
+- `Timeout in seconds`
+- Default report template and report language
+- Default extra instruction
+- PDF text, annotations, notes, attachment list, and imported documentation
+  toggles
+- Maximum total context characters
+- Maximum characters per imported document
+- Whether to open the generated note
+- Whether to add the `research-workbench:report` tag
 
-`sync_zotero.py`:
-
-```text
---zotero-dir PATH       Zotero data directory
---output PATH           Output directory
---library-id ID         Zotero library ID (default: 1)
---categories PATH       Category configuration JSON
-```
-
-`app_server.py`:
-
-```text
---port PORT             Server port (default: 5187)
-```
-
-### REST API
-
-The local server exposes:
-
-| Method | Endpoint | Description |
-|---|---|---|
-| GET | `/api/state` | Library, categories, and AI status |
-| GET | `/api/categories` | Current categories |
-| PUT | `/api/categories` | Save local category rules and resync |
-| GET | `/api/note/{id}` | Manual note sections for one item |
-| PUT | `/api/note/{id}` | Save manual note sections |
-| PUT | `/api/items/{id}/categories` | Assign local categories and resync |
-| POST | `/api/sync` | Resync from Zotero |
-| GET | `/api/ai/config` | AI provider status (`?probe=1` adds a live Codex probe) |
-| PUT | `/api/ai/config` | Save AI settings |
-| POST | `/api/ai/test` | Run a Codex self-check |
-| POST | `/api/ai/report` | Generate a report |
-| POST | `/api/report/export` | Export a report to the output directory |
-| GET | `/api/imports` | Imported documents; filter with `?item_id=` or `?item_key=` |
-| POST | `/api/imports` | Save imported documents and their item links |
-| POST | `/api/imports/readme` | Fetch and import a README by URL or `owner/repo` |
-| GET | `/api/imports/{id}` | One imported document, including its content |
-| PUT | `/api/imports/{id}` | Update the linked items of an import |
-| DELETE | `/api/imports/{id}` | Delete an imported document |
-
-### Output Layout
-
-```text
-output/
-├── README.md
-├── literature-map.md
-├── questions.md
-├── glossary.md
-├── notes/
-│   └── *.md
-├── imports/
-│   └── *.md
-├── dashboard/
-│   └── index.html
-├── data/
-│   ├── library.json
-│   ├── categories.runtime.json
-│   └── imports.json
-├── logs/
-│   └── codex-*.log
-└── reports/
-```
-
-`output/`, `.cache/`, and local configuration files are excluded from version
-control to prevent private Zotero annotations and API keys from being published.
+Settings are saved when changed. `Restore Defaults` resets every Research
+Workbench preference.
 
 ### Privacy
 
-- Zotero data is read from a local snapshot.
-- Generated notes, annotations, and reports stay in the local output directory.
-- API or Codex report generation sends only the material referenced by the
-  selected report scope (item notes, annotations, and linked imports) plus the
-  instruction supplied in the request.
-- The application does not upload Zotero data.
-
-### Limitations
-
-- Classification follows Zotero collections but does not write back to Zotero.
-- Moving an item between categories requires changing its Zotero collection and
-  resyncing.
-- The application is not a replacement for Zotero's own note editing or backup
-  tools.
-- Imported documents and their item links live in `output/` only; Zotero itself
-  is never modified.
-- Codex CLI requires access to the user's Codex configuration directory. When
-  that access is unavailable, API mode can be used instead.
+The plugin reads only the Zotero items you select. It assembles the source
+material on your computer and starts the local Codex CLI. The CLI then uses
+your existing Codex login to perform the request. The plugin does not create
+any additional network connection, does not upload files to a separate
+server, and does not store an API key.
 
 ### Troubleshooting
 
-- `Python 3.10 or newer was not found`: install Python from
-  <https://www.python.org/downloads/> and enable **Add Python to PATH** during
-  installation. Reopen the terminal after installing.
-- The server starts but the dashboard reports a Zotero database error: confirm
-  that `%USERPROFILE%\Zotero\zotero.sqlite` or `~/Zotero/zotero.sqlite`
-  exists, or set `ZOTERO_DATA_DIR`.
-- Port `5187` is already occupied by another application: run
-  `python app_server.py --port 5190`, then open
-  `http://127.0.0.1:5190`; on macOS/Linux you can also use
-  `PORT=5190 bash start-app.sh`.
-- The AI settings dialog reports **Codex not found**: install the Codex CLI,
-  then paste the full path to the executable into **AI settings → Codex
-  command**, or set `RESEARCH_WORKBENCH_CODEX`.
-- The AI settings dialog reports **Codex not logged in**: run `codex login` in a
-  terminal, finish the browser login, and reopen the dialog. The workbench reuses
-  that session and never asks for an API key in Codex mode.
-- Codex reports time out on a large library: raise `codex_timeout` in AI settings
-  (up to 3600 seconds) or narrow the report scope to a single item.
-- Codex exits with a permission error for `~/.codex`: run the server with the
-  same user account that ran `codex login`, and make sure that account can read
-  the Codex configuration directory.
-- A README link fails to import: the workbench only follows public URLs and
-  downloads up to 1.5 MB of text. Private repositories need a raw URL that
-  already contains a token.
+#### Codex is not found
+
+Open the Research Workbench settings and enter the full path to the executable.
+On Windows, a typical path looks like:
+
+```text
+C:\Users\<name>\AppData\Local\OpenAI\Codex\bin\<version>\codex.exe
+```
+
+Click `Detect Codex` after changing the path.
+
+#### Codex is found but not logged in
+
+Run this in a terminal:
+
+```powershell
+codex login status
+```
+
+If it is not logged in, run `codex login` and complete the browser flow. The
+plugin uses the same Codex home directory and login state as that terminal.
+
+#### The report times out
+
+Increase `Timeout in seconds` in the settings, reduce the number of selected
+items, or lower `Maximum total context characters`.
+
+#### A GitHub URL returns HTML instead of Markdown
+
+Use the repository URL, a `blob` URL, or a direct raw Markdown URL. The plugin
+tries common README filenames and branches automatically.
+
+#### A local path is not accepted
+
+Use an absolute path. Paths containing spaces are supported. You can also use
+the format:
+
+```text
+file:///C:/projects/demo/README.md
+```
+
+#### PDF full text is empty
+
+Open the PDF in Zotero and make sure Zotero has indexed its text. Scanned PDFs
+need OCR before Zotero can provide useful full text. The report can still use
+metadata, notes, and annotations.
+
+#### The plugin does not appear
+
+Confirm that Zotero is version 7 or newer, restart Zotero, and check
+`Help -> Debug Output for Troubleshooting`. Temporarily disabling and
+re-enabling the plugin also refreshes its menu and preference registrations.
+
+### Build the XPI
+
+From the repository root, run:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts/build-xpi.ps1
+```
+
+The script validates the required files, reads the version from
+`zotero-plugin/manifest.json`, and writes:
+
+```text
+release/zotero-research-workbench-1.0.0.xpi
+```
+
+The XPI root contains `manifest.json`, `bootstrap.js`, `prefs.js`, `content/`,
+and `locale/`. It does not contain the legacy Python dashboard.
+
+### Repository Layout
+
+```text
+zotero-plugin/                 Zotero XPI source
+  bootstrap.js                 Add-on lifecycle entry point
+  manifest.json                Add-on manifest and update URL
+  prefs.js                     Default preferences
+  content/                     Main logic, preferences UI, styles, icons
+  locale/                      English and Simplified Chinese strings
+scripts/build-xpi.ps1          XPI build script
+release/                       Built XPI and update manifest
+README.md                      Bilingual documentation
+LICENSE                        MIT license
+```
+
+The repository contains only the Zotero plugin. There is no Python backend, no
+local web server, and no other component to install.
 
 ### License
 
-Released under the [MIT License](LICENSE).
+MIT. See `LICENSE`.
 
 ---
 
 ## 简体中文
 
-### 简介
+### 功能概览
 
-本项目读取本地 Zotero SQLite 数据库，导出结构化的笔记与元数据，并提供一个不依赖
-第三方组件的本地网页仪表盘。全部数据都在你自己的电脑上处理。
-
-### 功能特性
-
-- 读取本地 Zotero 数据目录中的集合归属、标签、书目元数据、PDF 批注、笔记和
-  独立 PDF 附件。
-- 存在 Zotero 集合时按集合分组；未归入集合的条目使用基于关键词的兜底分类。
-- 每条文献导出一个 Markdown 笔记，重新同步时会保留你手写的段落。
-- 本地仪表盘提供分类导航、搜索、筛选、文献卡片和单条文献的批注详情。
-- 一键导入补充资料：粘贴 GitHub 仓库、raw 文件或纯文本链接（支持 `owner/repo`
-  简写）、拖入本地文件、或直接粘贴文本，再把资料关联到一篇或多篇文献。
-- 支持用 Codex 订阅登录生成报告，不需要 API 密钥：服务调用本机 `codex` 命令，
-  直接复用你已经登录的 ChatGPT 订阅会话。
-- 内置报告模板：研究问题—方法—结论、多篇对比综述、快速摘要，以及完全自定义。
-- 报告与 JSON 状态写入本地输出目录。
-- 不会向 Zotero 数据库写入任何内容。
+- 提供可直接安装的 Zotero `.xpi` 插件，不再依赖外部脚本或本地服务。
+- 支持从以下来源导入 README：
+  - `owner/repo`
+  - GitHub 仓库链接
+  - GitHub 文件链接
+  - 直接的 Markdown 或文本链接
+  - 本地文件路径
+- 自动建立文献关联：
+  - 只选中一条文献时，README 作为该文献的子附件。
+  - 选中多条文献时，README 作为独立附件导入，并通过 Zotero
+    `相关条目` 与这些文献关联。
+- 报告可使用 Zotero 元数据、摘要、笔记、PDF 批注、PDF 全文、附件清单和
+  已导入的 README。
+- 内置四种报告方式：
+  - 问题、方法与结论
+  - 多篇对比综述
+  - 快速摘要
+  - 仅按自定义要求
+- 默认研究报告模板包含八个部分：
+  1. 要解决什么问题
+  2. 提出的方法与技术路线
+  3. 关键发现与证据
+  4. 数据、实验或仿真设置
+  5. 局限、假设与未解决问题
+  6. 对我研究方向的意义
+  7. 可复现要点
+  8. 相关文献与材料关联
+- 报告直接保存为 Zotero 笔记，不生成游离于文献库之外的文件。
+- 提供原生 Zotero 设置页和一键 Codex 连接检测。
+- 提供英语和简体中文本地化。
 
 ### 运行要求
 
-- Python 3.10 或更高版本
-- 已安装 Zotero 桌面端，并存在本地数据目录
-- 可选：本地 Codex CLI（用 ChatGPT 订阅登录即可，不需要 API 密钥），用于生成
-  报告
-- 可选：兼容 OpenAI 的 API 地址与密钥，用于 API 报告
+- Zotero 桌面版 7 或更高版本，支持 Zotero 10。
+- 同一台电脑已经安装 Codex CLI。
+- Codex CLI 已经登录。ChatGPT 订阅登录即可，不需要提供 API Key。
+- Codex 使用你的账号处理请求时需要联网。
 
-不需要任何第三方 Python 包，程序只使用标准库。
+建议先在终端确认：
 
-### 安装
-
-```bash
-git clone https://github.com/fangfren/Zotero-ai-organization.git
-cd Zotero-ai-organization
+```powershell
+codex --version
+codex login status
 ```
 
-只要已安装 Python 3.10 或更高版本，就可以直接运行。
+如果尚未登录：
 
-创建虚拟环境是可选的：
-
-```bash
-python -m venv .venv
-
-# Windows PowerShell
-.\.venv\Scripts\Activate.ps1
-
-# macOS / Linux
-source .venv/bin/activate
+```powershell
+codex login
 ```
 
-### 快速开始
+### 安装插件
 
-Windows 用户可直接双击 `open-desktop.cmd`：脚本会自动查找本机 Python、启动服务、
-等待 `5187` 端口就绪，然后打开仪表盘。`run.cmd` 只用于刷新导出数据。脚本按
-`.venv`、`python`、Windows `py -3` 的顺序查找解释器；如果 Python 装在非标准
-位置，可用 `RESEARCH_WORKBENCH_PYTHON` 指定完整路径。
-
-macOS 和 Linux 用户执行：
-
-```bash
-bash run.sh
-bash start-app.sh
-```
-
-也可以手动启动：
-
-1. 先根据 Zotero 生成仪表盘数据：
-
-   ```bash
-   python sync_zotero.py
-   ```
-
-2. 启动本地服务：
-
-   ```bash
-   python app_server.py
-   ```
-
-3. 打开浏览器访问：
+1. 找到构建好的插件文件：
 
    ```text
-   http://127.0.0.1:5187
+   release/zotero-research-workbench-1.0.0.xpi
    ```
 
-服务默认只监听 `127.0.0.1`，不需要联网。
+   可以直接从仓库的
+   [release 目录](https://github.com/fangfren/Zotero-ai-organization/tree/main/release)
+   下载，也可以按下方“构建 XPI”一节在本地自行构建。
 
-### Zotero 数据目录
+2. 打开 Zotero。
+3. 进入 `工具 -> 插件`。
+4. 点击右上角齿轮，选择 `从文件安装插件...`。
+5. 选择 `zotero-research-workbench-1.0.0.xpi`。
+6. 确认安装。如果 Zotero 提示重启，请重启后再使用。
 
-默认的 Zotero 路径为：
+这个 XPI 只包含插件本体，不需要 Python、不需要本地服务器，也不需要其他运行时。
+插件内置了 `update_url`，从本仓库安装后可以直接在 Zotero 插件管理器中检查更新。
 
-```text
-Windows: %USERPROFILE%\Zotero
-macOS / Linux: ~/Zotero
-```
+### 第一次使用
 
-程序会读取以下文件：
+1. 打开 `编辑 -> 设置 -> 研究助手`。
+2. `Codex 可执行文件` 可以留空自动检测，也可以填写 `codex.exe`、
+   `codex.cmd` 的完整路径，或 Codex 安装目录。
+3. 点击 `检测 Codex`。
+4. 检测成功后会显示实际路径和版本，并会真正调用一次本机 `codex exec`，
+   用来确认订阅登录可用。
 
-```text
-zotero.sqlite
-zotero.sqlite-wal
-zotero.sqlite-shm
-```
-
-它们会被复制到 `.cache/` 后查询快照，因此运行期间 Zotero 可以保持打开。
-
-单次同步时指定数据目录：
-
-```bash
-python sync_zotero.py --zotero-dir "D:\path\to\Zotero"
-```
-
-仪表盘上的 **同步数据** 按钮由服务端触发重新同步，需要在启动服务前设置环境变量：
-
-```powershell
-# Windows PowerShell
-$env:ZOTERO_DATA_DIR = "D:\path\to\Zotero"
-.\start-app.cmd
-```
-
-```bash
-# macOS / Linux
-export ZOTERO_DATA_DIR="/path/to/Zotero"
-bash start-app.sh
-```
-
-`app_server.py` 会继承 `ZOTERO_DATA_DIR`，它启动的每次重新同步也会继续使用该目录。
-
-### 同步
-
-Zotero 数据变化后重新运行：
-
-```bash
-python sync_zotero.py
-```
-
-仪表盘读取生成的 `output/data/library.json`。同步过程不会修改 Zotero。
-
-### 导入资料（README 与文档）
-
-仪表盘的**导入文档**弹窗用来把补充资料和文献放在一起管理：
-
-- **一键导入 README**：可以粘贴 `owner/repo`、`https://github.com/owner/repo`、
-  `raw.githubusercontent.com` 链接，或其他纯文本 / Markdown 链接。仓库地址会按
-  `README.md`、`README.rst`、`README.txt`、`readme.md`、`README` 的顺序，在默认
-  分支（先 `main`，再 `master`）上自动抓取。
-- **本地文件**：拖入或选择 `.md`、`.markdown`、`.txt`、`.rst`、`.json`、`.yml`、
-  `.yaml`、`.csv` 文件，支持一次选多个。
-- **粘贴文本**：填写资料名称后直接粘贴内容。
-- **关联文献**：导入前勾选这份资料属于哪些文献，之后也可以随时修改。已关联的
-  资料会显示在文献详情里，并在生成报告时连同该文献的笔记和批注一起发送给 AI。
-
-导入内容按 Markdown 保存：
+插件会自动搜索 `PATH` 和常见安装目录。在 Windows 上会检查：
 
 ```text
-output/imports/<id>.md      导入的正文
-output/data/imports.json    索引：名称、关联文献、大小、来源、时间
+%LOCALAPPDATA%\OpenAI\Codex\bin
+%APPDATA%\npm
+%USERPROFILE%\.codex\bin
 ```
 
-不会向 Zotero 写入任何内容；删除导入资料时，正文文件和索引记录会一起删除。
+### 导入 README 并关联文献
 
-### 配置
+1. 在 Zotero 中选中一篇或多篇普通文献。
+2. 从以下任意入口执行导入：
+   - 条目信息栏：`研究助手 -> 导入 README`
+   - 文献右键菜单：`导入 README 并关联到这篇文献`
+   - 主菜单：`工具 -> 为选中文献导入 README`
+3. 输入以下任一格式：
+   - `owner/repo`
+   - `https://github.com/owner/repo`
+   - `https://github.com/owner/repo/blob/main/README.md`
+   - 可直接下载文本的 URL
+   - `C:\projects\demo\README.md`
+   - UNC 路径、`file://` URL，或 `~/...` 开头的路径
 
-先把示例配置复制为本地配置：
+导入后的附件会自动带 `research-workbench:readme` 标签，便于后续检索。选中的
+文献条目信息栏会显示已经关联的 README 和说明文档。
 
-Windows PowerShell：
+### 生成研究报告
 
-```powershell
-Copy-Item config\categories.example.json config\categories.json
-Copy-Item config\ai.example.json config\ai.json
-```
+1. 选中一篇或多篇普通文献。
+2. 打开 `研究助手` 条目信息栏，或使用研究助手菜单。
+3. 选择报告模板。
+4. 根据需要填写补充要求，例如：
 
-macOS / Linux：
-
-```bash
-cp config/categories.example.json config/categories.json
-cp config/ai.example.json config/ai.json
-```
-
-#### 分类配置
-
-`config/categories.json` 用于定义兜底分类：
-
-```json
-{
-  "default_category_id": "unsorted",
-  "categories": [
-    {
-      "id": "overview",
-      "name": "综述与入门",
-      "description": "可选说明",
-      "color": "#3f7f76",
-      "keywords": ["review", "overview"],
-      "item_ids": [],
-      "item_keys": []
-    }
-  ]
-}
-```
-
-字段说明：
-
-- `id`：稳定且唯一的标识符
-- `name`：显示名称
-- `description`：可选的分类说明
-- `color`：仪表盘使用的十六进制颜色
-- `keywords`：用于自动归类的子串或小写词元
-- `item_ids`：显式归入该分类的 Zotero 条目 ID
-- `item_keys`：显式归入该分类的 Zotero 条目 key
-
-当条目已属于 Zotero 集合时，集合归属优先于关键词匹配。
-
-#### AI 报告
-
-`config/ai.json` 用于选择报告来源：
-
-```json
-{
-  "provider": "codex",
-  "base_url": "https://api.openai.com/v1/chat/completions",
-  "model": "",
-  "api_key": "",
-  "codex_command": "",
-  "codex_model": "",
-  "codex_extra_args": "",
-  "codex_timeout": 600,
-  "report_template": "research"
-}
-```
-
-`provider` 可选值：
-
-- `codex`（默认）：调用本地 Codex CLI，复用你的 ChatGPT 订阅登录，不需要也不
-  会使用 API 密钥
-- `api`：调用兼容 OpenAI 的 chat completions 接口
-
-**Codex 订阅登录模式**
-
-1. 安装 Codex CLI，并在终端里登录一次：
-
-   ```bash
-   codex login
+   ```text
+   重点讲清控制策略、仿真参数设置，以及还没有解决的局限。
    ```
 
-2. 打开仪表盘的 **AI 设置**。状态区会显示检测到的可执行文件、版本、登录状态，
-   以及当前关联了多少份导入资料。
-3. 点 **测试 Codex** 先跑一次真实自检，再生成报告。
+5. 点击 `生成报告`。
 
-`codex` 可执行文件按以下顺序查找：
+单篇文献的报告会自动挂到该文献下面。多篇文献的报告会作为独立笔记创建，尽量
+放入当前分类，并通过 `相关条目` 与每篇来源文献关联。
 
-1. `config/ai.json` 里的 `codex_command`（在 AI 设置里填写）
-2. 环境变量 `RESEARCH_WORKBENCH_CODEX`
-3. 环境变量 `CODEX_BIN`
-4. `PATH` 中的 `codex`、`codex.cmd` 或 `codex.exe`
-5. 常见安装位置，例如 Codex 桌面端安装目录和 `~/.local/bin`
+报告以 Markdown 生成，再转换为 Zotero 笔记 HTML。标题、列表、表格、引用、
+链接和代码块都会保留，便于直接在 Zotero 笔记编辑器中阅读和继续修改。
 
-Codex 相关可选设置：
+### 发送给 Codex 的内容
 
-- `codex_model`：传给 CLI 的模型；留空表示使用 CLI 默认值
-- `codex_extra_args`：额外的命令行参数，例如 `--sandbox read-only`
-- `codex_timeout`：生成报告的等待秒数，超时即中断（60-3600，默认 600）
+插件只在本机整理当前选中的材料，然后交给已登录的 Codex CLI。根据设置，材料
+可能包括：
 
-使用 API 模式时需填写 `base_url`、`model` 和 `api_key`；密钥也可以通过
-`OPENAI_API_KEY` 或 `AI_API_KEY` 环境变量提供。
+- 标题、作者、年份、出版物、DOI、URL、条目类型和摘要。
+- Zotero 笔记。
+- PDF 批注和批注评论。
+- 从 PDF 提取的全文。
+- 附件名称和内容类型。
+- 已导入的 README 和说明文档。
 
-报告模板可在报告弹窗中选择，也可用 `report_template` 指定：
+插件本身不调用 AI API，不保存 API Key，也不额外连接其他模型服务。认证和请求
+由 Codex CLI 使用你的现有登录完成。处理敏感或未公开材料前，请结合自己的隐私
+要求判断是否适合发送。
 
-| 模板 | 章节 |
-|---|---|
-| `research`（默认） | 要解决什么问题 / 提出的方法 / 关键发现与证据 / 数据、实验或仿真设置 / 局限、假设与未解决问题 / 对我研究方向的意义 / 可复现要点 / 相关文献关联 |
-| `comparison` | 主题与检索范围 / 各文献要解决的问题 / 方法路线对比 / 指标、数据与结论对比 / 共识与分歧 / 研究空白与机会 / 建议的下一步工作 |
-| `quick` | 一句话结论 / 要解决什么问题 / 提出的方法 / 关键结果 / 局限 / 可以直接复用的点 |
-| `custom` | 不使用固定章节，完全按你填写的补充要求组织报告 |
+### 设置说明
 
-章节名称取自 `app_server.py`，所以每个人生成的报告结构一致。
+设置页支持：
 
-### 命令行参数
+- `Codex 可执行文件`
+- `模型覆盖`
+- `额外 CLI 参数`
+- `超时时间`
+- 默认报告模板和报告语言
+- 默认补充要求
+- PDF 全文、批注、笔记、附件清单、导入文档开关
+- 总上下文字符上限
+- 每份导入文档的字符上限
+- 生成后是否自动打开笔记
+- 是否添加 `research-workbench:report` 标签
 
-`sync_zotero.py`：
+修改设置后会自动保存。`恢复默认设置` 会重置研究助手的全部偏好。
 
-```text
---zotero-dir PATH       Zotero 数据目录
---output PATH           输出目录
---library-id ID         Zotero 文献库 ID（默认 1）
---categories PATH       分类配置文件
-```
+### 隐私说明
 
-`app_server.py`：
+插件只读取你主动选中的 Zotero 条目。它在你的电脑上组装材料，并启动本机
+Codex CLI。Codex 随后使用你已有的登录状态处理请求。插件不会建立额外的上传
+连接，不会把文件发送到独立服务器，也不会保存 API Key。
 
-```text
---port PORT             服务端口（默认 5187）
-```
+### 常见问题
 
-### REST 接口
+#### 找不到 Codex
 
-本地服务提供以下接口：
-
-| 方法 | 路径 | 说明 |
-|---|---|---|
-| GET | `/api/state` | 文献库、分类和 AI 状态 |
-| GET | `/api/categories` | 当前分类 |
-| PUT | `/api/categories` | 保存本地分类规则并重新同步 |
-| GET | `/api/note/{id}` | 单条文献的手写笔记段落 |
-| PUT | `/api/note/{id}` | 保存手写笔记段落 |
-| PUT | `/api/items/{id}/categories` | 设置本地分类并重新同步 |
-| POST | `/api/sync` | 从 Zotero 重新同步 |
-| GET | `/api/ai/config` | AI 配置状态（加 `?probe=1` 会实时探测 Codex） |
-| PUT | `/api/ai/config` | 保存 AI 设置 |
-| POST | `/api/ai/test` | 运行一次 Codex 自检 |
-| POST | `/api/ai/report` | 生成报告 |
-| POST | `/api/report/export` | 把报告导出到输出目录 |
-| GET | `/api/imports` | 导入资料列表，可用 `?item_id=` 或 `?item_key=` 过滤 |
-| POST | `/api/imports` | 保存导入资料及其关联文献 |
-| POST | `/api/imports/readme` | 用链接或 `owner/repo` 抓取并导入 README |
-| GET | `/api/imports/{id}` | 单份导入资料，含正文 |
-| PUT | `/api/imports/{id}` | 修改这份资料的关联文献 |
-| DELETE | `/api/imports/{id}` | 删除这份导入资料 |
-
-### 输出目录结构
+在设置页填写可执行文件的完整路径。Windows 上通常类似：
 
 ```text
-output/
-├── README.md
-├── literature-map.md
-├── questions.md
-├── glossary.md
-├── notes/
-│   └── *.md
-├── imports/
-│   └── *.md
-├── dashboard/
-│   └── index.html
-├── data/
-│   ├── library.json
-│   ├── categories.runtime.json
-│   └── imports.json
-├── logs/
-│   └── codex-*.log
-└── reports/
+C:\Users\<用户名>\AppData\Local\OpenAI\Codex\bin\<版本>\codex.exe
 ```
 
-`output/`、`.cache/` 和本地配置文件都已排除在版本控制之外，避免把私人批注和
-API 密钥发布出去。
+修改后点击 `检测 Codex`。
 
-### 隐私
+#### 能找到 Codex，但没有登录
 
-- Zotero 数据从本地快照读取。
-- 生成的笔记、批注和报告只保存在本地输出目录。
-- 生成报告时只会发送所选报告范围引用的内容（文献笔记、批注和已关联的导入资料）
-  以及你在请求中填写的指令。
-- 程序不会上传 Zotero 数据。
+在终端执行：
 
-### 已知限制
+```powershell
+codex login status
+```
 
-- 分类依据 Zotero 集合，但不会写回 Zotero。
-- 想把条目移动到别的分类，需要先修改它的 Zotero 集合再重新同步。
-- 本项目不能替代 Zotero 自带的笔记编辑和备份工具。
-- 导入的资料和关联关系只保存在 `output/` 里，不会修改 Zotero。
-- Codex CLI 需要访问用户的 Codex 配置目录；若无法访问，可以改用 API 模式。
+如果显示未登录，执行 `codex login` 并完成浏览器登录。插件使用的是同一个
+Codex 用户目录和登录状态。
 
-### 常见问题排查
+#### 生成报告超时
 
-- 提示 `Python 3.10 or newer was not found`：从
-  <https://www.python.org/downloads/> 安装 Python，安装时勾选
-  **Add Python to PATH**，安装完成后重新打开终端。
-- 服务能启动但仪表盘报 Zotero 数据库错误：确认
-  `%USERPROFILE%\Zotero\zotero.sqlite` 或 `~/Zotero/zotero.sqlite` 存在，
-  或设置 `ZOTERO_DATA_DIR`。
-- `5187` 端口被其他程序占用：改用
-  `python app_server.py --port 5190`，然后访问
-  `http://127.0.0.1:5190`；macOS/Linux 也可执行
-  `PORT=5190 bash start-app.sh`。
-- AI 设置里提示**未找到 Codex**：安装 Codex CLI，然后把可执行文件的完整路径填到
-  **AI 设置 → Codex 命令**，或设置环境变量 `RESEARCH_WORKBENCH_CODEX`。
-- AI 设置里提示 **Codex 未登录**：先在终端执行 `codex login`，在浏览器里完成登录，
-  再重新打开弹窗。Codex 模式下工作台复用这个登录，不会索要 API 密钥。
-- 文献库较大时报告超时：在 AI 设置里调大 `codex_timeout`（最大 3600 秒），或把
-  报告范围缩小到单篇文献。
-- Codex 报 `~/.codex` 权限错误：请用执行过 `codex login` 的同一个系统账号运行
-  服务，并确认该账号能读取 Codex 配置目录。
-- README 抓取失败：工作台只抓取公开链接，且最多下载 1.5 MB 文本；私有仓库需要
-  使用带 token 的 raw 链接。
+提高 `超时时间`，减少一次选中的文献数量，或降低 `总上下文字符上限`。
+
+#### GitHub 链接下载到的是网页
+
+请使用仓库地址、`blob` 地址或直接 raw Markdown 地址。插件会自动尝试常见的
+README 文件名和分支名。
+
+#### 本地路径无法识别
+
+请使用绝对路径。路径中包含空格也可以。也可以使用：
+
+```text
+file:///C:/projects/demo/README.md
+```
+
+#### PDF 全文为空
+
+请先用 Zotero 打开 PDF，确认 Zotero 已建立全文索引。扫描版 PDF 需要先做
+OCR。即使全文不可用，报告仍然可以使用元数据、笔记和批注。
+
+#### 插件没有出现在界面中
+
+确认 Zotero 版本不低于 7，重启 Zotero，并查看
+`帮助 -> 调试输出`。也可以在插件管理器中暂时禁用再重新启用，刷新菜单和
+设置页注册。
+
+### 构建 XPI
+
+在仓库根目录执行：
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts/build-xpi.ps1
+```
+
+脚本会检查必要文件、读取 `zotero-plugin/manifest.json` 中的版本号，并输出：
+
+```text
+release/zotero-research-workbench-1.0.0.xpi
+```
+
+XPI 根目录直接包含 `manifest.json`、`bootstrap.js`、`prefs.js`、`content/`
+和 `locale/`，不会包含旧版 Python 网页工具。
+
+### 仓库结构
+
+```text
+zotero-plugin/                 Zotero XPI 源码
+  bootstrap.js                 插件生命周期入口
+  manifest.json                插件清单与更新地址
+  prefs.js                     默认偏好设置
+  content/                     主逻辑、设置页、样式与图标
+  locale/                      英语和简体中文字符串
+scripts/build-xpi.ps1          XPI 构建脚本
+release/                       构建后的 XPI 与更新清单
+README.md                      双语说明文档
+LICENSE                        MIT 许可证
+```
+
+仓库中只包含 Zotero 插件本体，没有 Python 后端、本地网页服务或其他需要安装
+的组件。
 
 ### 许可证
 
-基于 [MIT License](LICENSE) 发布。
+MIT，详见 `LICENSE`。

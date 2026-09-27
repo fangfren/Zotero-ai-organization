@@ -1,0 +1,20 @@
+{
+  "manifest_version": 2,
+  "name": "Research Workbench",
+  "version": "1.0.0",
+  "description": "Import docs into Zotero, link them to literature, and generate research reports with the local Codex CLI.",
+  "homepage_url": "https://github.com/fangfren/Zotero-ai-organization",
+  "author": "fangfren",
+  "icons": {
+    "48": "content/icons/workbench-48.svg",
+    "96": "content/icons/workbench-96.svg"
+  },
+  "applications": {
+    "zotero": {
+      "id": "zotero-research-workbench@fangfren",
+      "update_url": "https://raw.githubusercontent.com/fangfren/Zotero-ai-organization/main/release/update.json",
+      "strict_min_version": "6.999",
+      "strict_max_version": "9999.*"
+    }
+  }
+}

@@ -1,0 +1,208 @@
+/*
+ * Research Workbench for Zotero
+ *
+ * Shared styles for the item pane section and the preferences pane.
+ * Everything stays close to Zotero's own text sizes and colours so the
+ * section does not look pasted on, and both light and dark themes work.
+ */
+
+.rw-body,
+.rw-pane {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+	min-width: 0;
+}
+
+.rw-pane {
+	padding: 2px 2px 10px;
+	font-size: 12px;
+}
+
+.rw-label,
+.rw-pref-title {
+	font-size: 12px;
+	font-weight: 600;
+	line-height: 1.4;
+	margin: 2px 0 0;
+}
+
+.rw-hint,
+.rw-empty,
+.rw-help {
+	font-size: 12px;
+	line-height: 1.45;
+	opacity: 0.72;
+	white-space: normal;
+}
+
+.rw-help {
+	margin: -2px 0 6px;
+}
+
+.rw-select,
+.rw-input,
+.rw-textarea {
+	box-sizing: border-box;
+	width: 100%;
+	min-width: 0;
+	padding: 4px 6px;
+	font: inherit;
+	line-height: 1.4;
+	color: inherit;
+	background: Field;
+	border: 1px solid rgba(128, 128, 128, 0.5);
+	border: 1px solid color-mix(in srgb, currentColor 25%, transparent);
+	border-radius: 3px;
+}
+
+.rw-textarea {
+	resize: vertical;
+	min-height: 54px;
+	font-family: inherit;
+}
+
+.rw-select:focus-visible,
+.rw-input:focus-visible,
+.rw-textarea:focus-visible {
+	outline: 2px solid -moz-mac-focusring;
+	outline-offset: -1px;
+}
+
+.rw-actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 6px;
+	margin: 2px 0;
+}
+
+.rw-button {
+	padding: 3px 10px;
+	min-height: 24px;
+	font: inherit;
+	border-radius: 4px;
+	cursor: pointer;
+}
+
+.rw-button[disabled] {
+	opacity: 0.55;
+	cursor: default;
+}
+
+.rw-primary {
+	font-weight: 600;
+	background-color: color-mix(in srgb, Highlight 16%, ButtonFace);
+	border-color: color-mix(in srgb, Highlight 45%, transparent);
+}
+
+.rw-docs {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+	max-height: 220px;
+	overflow: auto;
+}
+
+.rw-doc {
+	display: flex;
+	align-items: baseline;
+	gap: 6px;
+	line-height: 1.4;
+	overflow-wrap: anywhere;
+}
+
+.rw-doc a {
+	text-decoration: none;
+}
+
+.rw-doc a:hover {
+	text-decoration: underline;
+}
+
+.rw-status {
+	font-size: 12px;
+	line-height: 1.45;
+	min-height: 0;
+	overflow-wrap: anywhere;
+	white-space: pre-wrap;
+	user-select: text;
+}
+
+.rw-status.is-error {
+	color: #c25b5b;
+}
+
+.rw-status.is-ok {
+	color: #4f8a4f;
+}
+
+/* ------------------------------------------------------ preferences pane */
+
+.rw-prefs {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+	max-width: 620px;
+	padding: 4px 0 12px;
+	user-select: text;
+}
+
+.rw-prefs button,
+.rw-prefs select,
+.rw-prefs input[type="checkbox"] {
+	user-select: none;
+}
+
+.rw-pref-row {
+	display: flex;
+	flex-direction: column;
+	gap: 3px;
+	margin-bottom: 8px;
+}
+
+.rw-pref-row.is-inline {
+	flex-direction: row;
+	align-items: center;
+	gap: 8px;
+	margin-bottom: 4px;
+}
+
+.rw-pref-row.is-inline input[type="checkbox"] {
+	margin: 0;
+}
+
+.rw-pref-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+	gap: 4px 16px;
+}
+
+.rw-pref-actions {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 8px;
+	margin: 6px 0 2px;
+}
+
+.rw-pref-section {
+	margin: 12px 0 4px;
+	font-size: 13px;
+	font-weight: 600;
+}
+
+.rw-pref-status {
+	font-size: 12px;
+	line-height: 1.5;
+	overflow-wrap: anywhere;
+	white-space: pre-wrap;
+	user-select: text;
+}
+
+.rw-pref-status.is-error {
+	color: #c25b5b;
+}
+
+.rw-pref-status.is-ok {
+	color: #4f8a4f;
+}
