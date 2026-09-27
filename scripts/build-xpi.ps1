@@ -3,7 +3,6 @@ $ErrorActionPreference = "Stop"
 $root = Split-Path -Parent $PSScriptRoot
 $source = Join-Path $root "zotero-plugin"
 $release = Join-Path $root "release"
-$destination = Join-Path $release "zotero-research-workbench-1.0.3.xpi"
 
 # Entries are written in this order; every path uses forward slashes because
 # Gecko resolves add-on resources through JAR URIs and does not understand
@@ -36,9 +35,11 @@ foreach ($relativePath in $requiredFiles) {
 }
 
 $manifest = Get-Content -LiteralPath (Join-Path $source "manifest.json") -Raw | ConvertFrom-Json
-if ($manifest.version -ne "1.0.3") {
-    throw "manifest.json version is '$($manifest.version)', expected 1.0.3"
+$version = [string]$manifest.version
+if (-not $version) {
+    throw "manifest.json does not declare a version"
 }
+$destination = Join-Path $release "zotero-research-workbench-$version.xpi"
 
 New-Item -ItemType Directory -Force -Path $release | Out-Null
 if (Test-Path -LiteralPath $destination) {

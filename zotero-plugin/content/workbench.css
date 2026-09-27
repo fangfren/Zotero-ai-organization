@@ -192,16 +192,54 @@
 	overflow: auto;
 }
 
-.rw-note {
+/*
+ * Attachment-style rows. Notes, PDF annotations and README files are shown
+ * with the same layout so the panels read like Zotero's own attachment list,
+ * while the underlying data stays real Zotero items.
+ */
+.rw-attach {
 	display: flex;
 	align-items: flex-start;
-	gap: 6px;
+	gap: 8px;
+	min-width: 0;
 	padding: 6px 8px;
 	background: color-mix(in srgb, currentColor 5%, transparent);
+	border: 1px solid transparent;
 	border-radius: 4px;
 }
 
-.rw-note-main {
+.rw-attach.is-clickable {
+	cursor: pointer;
+}
+
+.rw-attach.is-clickable:hover {
+	background: color-mix(in srgb, currentColor 9%, transparent);
+}
+
+.rw-attach.is-active {
+	border-color: color-mix(in srgb, Highlight 45%, transparent);
+	background: color-mix(in srgb, Highlight 12%, transparent);
+}
+
+.rw-attach-badge {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	flex: 0 0 auto;
+	min-width: 34px;
+	height: 18px;
+	padding: 0 4px;
+	margin-top: 1px;
+	font-size: 9px;
+	font-weight: 600;
+	letter-spacing: 0;
+	line-height: 1;
+	text-transform: uppercase;
+	background: color-mix(in srgb, currentColor 12%, transparent);
+	border-radius: 3px;
+}
+
+.rw-attach-main {
 	display: flex;
 	flex: 1 1 auto;
 	flex-direction: column;
@@ -209,23 +247,51 @@
 	min-width: 0;
 }
 
-.rw-note-title {
+.rw-attach-title {
 	font-weight: 600;
 	line-height: 1.4;
 	overflow-wrap: anywhere;
+	user-select: text;
 }
 
-.rw-note-preview {
+.rw-attach-meta {
+	display: flex;
+	align-items: center;
+	gap: 5px;
+	min-width: 0;
+	font-size: 11px;
+	line-height: 1.4;
+	opacity: 0.78;
+	overflow-wrap: anywhere;
+}
+
+.rw-attach-color {
+	flex: 0 0 auto;
+	width: 9px;
+	height: 9px;
+	border: 1px solid color-mix(in srgb, currentColor 30%, transparent);
+	border-radius: 50%;
+}
+
+.rw-attach-preview {
 	font-size: 11px;
 	line-height: 1.4;
 	opacity: 0.72;
 	overflow-wrap: anywhere;
+	user-select: text;
 }
 
-.rw-note-actions {
+.rw-attach-actions {
 	display: flex;
-	flex-shrink: 0;
+	flex-wrap: wrap;
 	gap: 4px;
+	margin-top: 2px;
+}
+
+.rw-attach-action {
+	min-height: 20px;
+	padding: 2px 8px;
+	font-size: 11px;
 }
 
 /* -------------------------------------------------------- tags tab */
@@ -291,62 +357,12 @@
 	background: color-mix(in srgb, currentColor 16%, transparent);
 }
 
-/* --------------------------------------------------------- chat pane */
-
 .rw-annotations {
 	display: flex;
 	flex-direction: column;
 	gap: 6px;
 	max-height: 40vh;
 	overflow: auto;
-}
-
-.rw-annotation {
-	display: flex;
-	flex-direction: column;
-	gap: 3px;
-	padding: 6px 8px;
-	background: color-mix(in srgb, currentColor 5%, transparent);
-	border-radius: 4px;
-}
-
-.rw-annotation-meta {
-	display: flex;
-	align-items: center;
-	gap: 6px;
-	font-size: 11px;
-	line-height: 1.4;
-	opacity: 0.78;
-}
-
-.rw-annotation-type {
-	font-weight: 600;
-}
-
-.rw-annotation-color {
-	width: 10px;
-	height: 10px;
-	border: 1px solid color-mix(in srgb, currentColor 30%, transparent);
-	border-radius: 50%;
-}
-
-.rw-annotation-text {
-	line-height: 1.45;
-	overflow-wrap: anywhere;
-	user-select: text;
-}
-
-.rw-annotation-comment {
-	font-size: 11px;
-	line-height: 1.45;
-	overflow-wrap: anywhere;
-	opacity: 0.82;
-	user-select: text;
-}
-
-.rw-annotation-actions {
-	display: flex;
-	gap: 4px;
 }
 
 /* -------------------------------------------------------- readme pane */
@@ -360,22 +376,11 @@
 
 .rw-readme-list {
 	display: flex;
-	flex-wrap: wrap;
+	flex-direction: column;
 	gap: 6px;
-	max-height: 120px;
+	min-width: 0;
+	max-height: 180px;
 	overflow: auto;
-}
-
-.rw-readme-doc {
-	max-width: 100%;
-	overflow-wrap: anywhere;
-	text-align: start;
-}
-
-.rw-readme-doc.is-active {
-	font-weight: 600;
-	background: color-mix(in srgb, Highlight 16%, ButtonFace);
-	border-color: color-mix(in srgb, Highlight 40%, transparent);
 }
 
 .rw-readme-viewer {

@@ -1,23 +1,12 @@
-__pycache__/
-*.pyc
-*.py[cod]
-*$py.class
+# Local development and test harness output
 .cache/
-output/
-.venv/
-venv/
-env/
-.pytest_cache/
-.mypy_cache/
-.ruff_cache/
-*.egg-info/
 build/
 dist/
+*.log
+
+# Editor and OS files
 .idea/
 .vscode/
 .DS_Store
 Thumbs.db
 Desktop.ini
-*.log
-config/ai.json
-config/categories.json

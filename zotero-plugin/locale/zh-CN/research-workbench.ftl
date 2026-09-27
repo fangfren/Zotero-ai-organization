@@ -1,4 +1,5 @@
-research-workbench-section-header = 研究助手
+research-workbench-section-header =
+    .label = 研究助手
 research-workbench-section-sidenav =
     .tooltiptext = 研究助手
 

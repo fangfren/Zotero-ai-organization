@@ -1,4 +1,5 @@
-research-workbench-section-header = Research Workbench
+research-workbench-section-header =
+    .label = Research Workbench
 research-workbench-section-sidenav =
     .tooltiptext = Research Workbench
 
